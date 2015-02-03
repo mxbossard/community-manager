@@ -1,0 +1,10 @@
+community_mgr:
+    resource: "@MxBossardCommunityMgrBundle/Controller/"
+    type:     annotation
+    prefix:   /{_locale}/
+    requirements:
+        _locale: en|fr
+
+app:
+    resource: @AppBundle/Controller/
+    type:     annotation

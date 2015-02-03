@@ -1,0 +1,21 @@
+user.username.not_blank: Vous devez fournir un login.
+user.username.length_min: Votre login est trop court. Il doit contenir au minimum {{llimit}} caracteres.
+user.username.length_max: Votre login est trop long. Il doit contenir au maximum {{llimit}} caracteres.
+
+user.password.not_blank: Vous devez fournir un mot de passe.
+user.password.length_min: Votre mot de passe est trop court. Il doit contenir au minimum {{llimit}} caracteres.
+user.password.length_max: Votre mot de passe est trop long. Il doit contenir au maximum {{llimit}} caracteres.
+
+user.email.not_blank: Vous devez fournir une adresse email.
+user.email.valid: Votre adresse email est invalide.
+
+user.lastname.length_min: Votre nom de famille est trop court. Il doit contenir au minimum {{llimit}} caracteres.
+user.lastname.length_max: Votre nom de famille est trop long. Il doit contenir au maximum {{llimit}} caracteres.
+
+user.firstname.length_min: Votre prénom est trop court. Il doit contenir au minimum {{llimit}} caracteres.
+user.firstname.length_max: Votre prénom est trop long. Il doit contenir au maximum {{llimit}} caracteres.
+
+user.aliasname.length_min: Votre pseudonyme est trop court. Il doit contenir au minimum {{llimit}} caracteres.
+user.aliasname.length_max: Votre pseudonyme est trop long. Il doit contenir au maximum {{llimit}} caracteres.
+
+user.birthdate.valid: Votre date de naissance n''est pas une date valide.
