@@ -1,0 +1,6 @@
+form:
+    register:
+        username.placeholder: JeanValjean42
+        email.placeholder: jean.valjean42@yahoo.com
+        password.placeholder: votre mot de passe
+        password_confirmation.placeholder: confirmez le mot de passe

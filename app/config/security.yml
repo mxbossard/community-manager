@@ -3,8 +3,9 @@
 security:
     # http://symfony.com/doc/current/book/security.html#encoding-the-user-s-password
     encoders:
-        Symfony\Component\Security\Core\User\User: plaintext
-        MxBossard\CommunityMgrBundle\Entity\User: brcypt
+        #Symfony\Component\Security\Core\User\User: plaintext
+        #MxBossard\CommunityMgrBundle\Entity\User: brcypt
+        FOS\UserBundle\Model\UserInterface: sha512
 
     # http://symfony.com/doc/current/book/security.html#hierarchical-roles
     role_hierarchy:
@@ -13,14 +14,17 @@ security:
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory:
-            memory:
-                users:
-                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
-                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
-        administrators:
+        #in_memory:
+        #    memory:
+        #        users:
+        #            user:  { password: userpass, roles: [ 'ROLE_USER' ] }
+        #            admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+        #administrators:
             # Use the UserRepository which implementq UserProviderInterface as provider
-            entity: { class: MxBossardCommunityMgrBundle:User }
+        #    entity: { class: MxBossardCommunityMgrBundle:User }
+        fos_userbundle:
+            #id: fos_user.user_provider.username
+            id: fos_user.user_provider.username_email
 
     # the main part of the security, where you can set up firewalls
     # for specific sections of your app
@@ -29,9 +33,13 @@ security:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        admin_area:
-            pattern:    ^/admin
-            http_basic: ~
+        main:
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_provider: form.csrf_provider
+            logout:       true
+            anonymous:    true
 
         # the login page has to be accessible for everybody
         demo_login:
@@ -57,7 +65,7 @@ security:
     # of your application based on roles, ip, host or methods
     # http://symfony.com/doc/current/cookbook/security/access_control.html
     access_control:
-        - { path: ^/public, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
-        - { path: ^/admin, roles: ROLE_ADMIN, requires_channel: https }
-        - { path: ^/app, roles: ROLE_USER, requires_channel: https }
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: ROLE_ADMIN }
