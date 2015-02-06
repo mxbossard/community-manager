@@ -1,3 +1,8 @@
+mby_community:
+    resource: "@MbyCommunityBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 mby_user:
     resource: "@MbyUserBundle/Controller/"
     type:     annotation

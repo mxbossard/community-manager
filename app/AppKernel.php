@@ -22,6 +22,7 @@ class AppKernel extends Kernel
             new MxBossard\CommunityMgrBundle\MxBossardCommunityMgrBundle(),
             new Mby\UserBundle\MbyUserBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new Mby\CommunityBundle\MbyCommunityBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

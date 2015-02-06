@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% if form is defined %}
+    {# Use bootstrap 3 horizontal layout to render forms #}
+    {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+{% endif %}
+
+{% block title %}
+    {% trans %} page.public_home.title {% endtrans %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ include('AppBundle::style.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <div id="body" class="container">
+        <div class="row">
+            <div id="header" class="col-sm-12">
+                {% block header %}
+                    {{ include('AppBundle::header.html.twig') }}
+                {% endblock %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="sideBar" class="col-md-2 col-sm-9 col-xs-8">
+                {% block sideBar %}
+                    {{ include('AppBundle::sideBar.html.twig') }}
+                {% endblock %}
+            </div>
+            
+            <div id="identity" class="col-md-2 col-md-push-8 col-sm-3 col-xs-4">
+                {% block identity %}
+                    {{ include('AppBundle::identity.html.twig') }}
+                {% endblock %}
+            </div>
+
+            <div id="content" class="col-md-8 col-md-pull-2 col-sm-12 col-xs-12">
+                <div id="navBar">
+                    {% block navBar %}
+                        {{ include('AppBundle::navBar.html.twig') }}
+                    {% endblock %}
+                </div>
+                
+                {% block content %}
+                    {% block fos_user_content %}{% endblock %}
+                    {% block page %}{% endblock %}
+                {% endblock %}
+            </div>
+
+
+        </div>
+
+        <div class="row">
+            <div id="footer" class="col-sm-12">
+                {% block footer %}
+                    {{ include('AppBundle::footer.html.twig') }}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        
+    </div>
+
+    <div class="clear-fix"></div>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+{% endblock %}

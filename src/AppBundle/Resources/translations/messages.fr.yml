@@ -1,0 +1,13 @@
+form.user: Utilisateur
+form.user.username: login
+form.user.password: mot de passe
+form.user.password_confirm: confirmation
+form.user.email: adresse email
+form.user.lastname: nom de famille
+form.user.firstname: prénom
+form.user.aliasname: pseudonyme
+form.user.birthdate: date de naissance
+
+page.register.title: Enregistrement
+
+page.public_home.title: Bienvenue ici !

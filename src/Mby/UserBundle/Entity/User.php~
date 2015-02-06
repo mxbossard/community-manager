@@ -3,9 +3,7 @@
 namespace Mby\UserBundle\Entity;
 
 use FOS\UserBundle\Entity\User as BaseUser;
-
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -124,37 +122,4 @@ class User extends BaseUser
         return $this->updated;
     }
 
-
-    /**
-     * Add ownedCommunities
-     *
-     * @param \Mby\CommunityBundle\Entity\Community $ownedCommunities
-     * @return User
-     */
-    public function addOwnedCommunity(\Mby\CommunityBundle\Entity\Community $ownedCommunities)
-    {
-        $this->ownedCommunities[] = $ownedCommunities;
-
-        return $this;
-    }
-
-    /**
-     * Remove ownedCommunities
-     *
-     * @param \Mby\CommunityBundle\Entity\Community $ownedCommunities
-     */
-    public function removeOwnedCommunity(\Mby\CommunityBundle\Entity\Community $ownedCommunities)
-    {
-        $this->ownedCommunities->removeElement($ownedCommunities);
-    }
-
-    /**
-     * Get ownedCommunities
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getOwnedCommunities()
-    {
-        return $this->ownedCommunities;
-    }
 }

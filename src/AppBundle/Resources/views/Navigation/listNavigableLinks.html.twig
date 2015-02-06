@@ -1,0 +1,13 @@
+<div class="row">
+
+	{% for link in links %}
+		<div class="box col-md-12 col-sm-3 col-xs-4">
+			<p>
+			    <a href="{{ path(link) }}" class="btn btn-default btn-lg btn-block" title="{{ link | trans }}">
+			        {{ link | trans }}
+			    </a>
+			</p>
+		</div>
+	{% endfor %}
+
+</div>
