@@ -12,9 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="mby_communities")
  * @ORM\Entity(repositoryClass="Mby\CommunityBundle\Entity\CommunityRepository")
- * @ORM\HasLifecycleCallbacks()
  */
-class Community
+class Community extends AbstractBaseEntity
 {
     /**
      * @var integer
@@ -65,20 +64,6 @@ class Community
     private $note;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated", type="datetime", nullable=true)
-     */
-    private $updated;
-
-    /**
      * @var Mby\UserBundle\Entity\User
      * 
      * @ORM\ManyToOne(targetEntity="Mby\UserBundle\Entity\User", inversedBy="ownedCommunities")
@@ -87,19 +72,17 @@ class Community
     private $owner;
 
     /**
-     * @ORM\PrePersist
+     * @var \ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\Membership", mappedBy="community")
      */
-    public function prePersistCallback()
-    {
-        $this->created = new \DateTime();
-    }
+    private $memberships;
 
-    /**
-     * @ORM\PreUpdate
-     */
-    public function preUpdateCallback()
+    public function __construct()
     {
-        $this->updated = new \DateTime();
+        parent::__construct();
+        
+        $this->memberships = new ArrayCollection();
     }
 
     /**
@@ -205,53 +188,6 @@ class Community
     }
 
     /**
-     * Set created
-     *
-     * @param \DateTime $created
-     * @return Community
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created
-     *
-     * @return \DateTime 
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set updated
-     *
-     * @param \DateTime $updated
-     * @return Community
-     */
-    public function setUpdated($updated)
-    {
-        $this->updated = $updated;
-
-        return $this;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return \DateTime 
-     */
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-
-    /**
      * Set owner
      *
      * @param \Mby\UserBundle\Entity\User $owner
@@ -272,5 +208,38 @@ class Community
     public function getOwner()
     {
         return $this->owner;
+    }
+
+    /**
+     * Add memberships
+     *
+     * @param \Mby\CommunityBundle\Entity\Membership $memberships
+     * @return Community
+     */
+    public function addMembership(\Mby\CommunityBundle\Entity\Membership $memberships)
+    {
+        $this->memberships[] = $memberships;
+
+        return $this;
+    }
+
+    /**
+     * Remove memberships
+     *
+     * @param \Mby\CommunityBundle\Entity\Membership $memberships
+     */
+    public function removeMembership(\Mby\CommunityBundle\Entity\Membership $memberships)
+    {
+        $this->memberships->removeElement($memberships);
+    }
+
+    /**
+     * Get memberships
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMemberships()
+    {
+        return $this->memberships;
     }
 }

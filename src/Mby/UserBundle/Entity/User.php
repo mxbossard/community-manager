@@ -44,11 +44,19 @@ class User extends BaseUser
      */
     private $ownedCommunities;
 
+    /**
+     * @var \ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\Membership", mappedBy="community")
+     */
+    private $memberships;
+
     public function __construct()
     {
         parent::__construct();
         
         $this->ownedCommunities = new ArrayCollection();
+        $this->memberships = new ArrayCollection();
     }
 
     /**
@@ -156,5 +164,38 @@ class User extends BaseUser
     public function getOwnedCommunities()
     {
         return $this->ownedCommunities;
+    }
+
+    /**
+     * Add memberships
+     *
+     * @param \Mby\CommunityBundle\Entity\Membership $memberships
+     * @return User
+     */
+    public function addMembership(\Mby\CommunityBundle\Entity\Membership $memberships)
+    {
+        $this->memberships[] = $memberships;
+
+        return $this;
+    }
+
+    /**
+     * Remove memberships
+     *
+     * @param \Mby\CommunityBundle\Entity\Membership $memberships
+     */
+    public function removeMembership(\Mby\CommunityBundle\Entity\Membership $memberships)
+    {
+        $this->memberships->removeElement($memberships);
+    }
+
+    /**
+     * Get memberships
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMemberships()
+    {
+        return $this->memberships;
     }
 }
