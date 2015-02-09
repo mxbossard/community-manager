@@ -40,20 +40,28 @@ class Membership extends AbstractBaseEntity
      * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Community", inversedBy="memberships")
      * @ORM\JoinColumn(name="community_id", referencedColumnName="id", nullable=false)
      */
-    private $community;
+    //private $community;
+
+    /**
+     * @var Mby\CommunityBundle\Entity\Season
+     * 
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Season", inversedBy="memberships")
+     * @ORM\JoinColumn(name="season_id", referencedColumnName="id", nullable=false)
+     */
+    private $season;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Id
-     * @ORM\Column(name="fromDate", type="date")
+     * @ORM\Column(name="fromDate", type="date", nullable=true)
      */
     private $fromDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="toDate", type="date")
+     * @ORM\Column(name="toDate", type="date", nullable=true)
      */
     private $toDate;
 
@@ -85,8 +93,7 @@ class Membership extends AbstractBaseEntity
      * @ORM\JoinTable(name="mby_memberships_responsibilities",
      *      joinColumns={
      *               @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false, unique=true),
-     *               @ORM\JoinColumn(name="community_id", referencedColumnName="community_id", nullable=false, unique=true),
-     *               @ORM\JoinColumn(name="membership_fromDate", referencedColumnName="fromDate", nullable=false, unique=true),
+     *               @ORM\JoinColumn(name="season_id", referencedColumnName="season_id", nullable=false, unique=true)
      *           },
      *      inverseJoinColumns={@ORM\JoinColumn(name="responsibility_id", referencedColumnName="id", nullable=false, unique=true)}
      * )
@@ -102,15 +109,6 @@ class Membership extends AbstractBaseEntity
         $this->responsibilities = new ArrayCollection();
     }
 
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set fromDate
@@ -251,26 +249,26 @@ class Membership extends AbstractBaseEntity
     }
 
     /**
-     * Set community
+     * Set season
      *
-     * @param \Mby\CommunityBundle\Entity\Community $community
+     * @param \Mby\CommunityBundle\Entity\Season $season
      * @return Membership
      */
-    public function setCommunity(\Mby\CommunityBundle\Entity\Community $community)
+    public function setSeason(\Mby\CommunityBundle\Entity\Season $season)
     {
-        $this->community = $community;
+        $this->season = $season;
 
         return $this;
     }
 
     /**
-     * Get community
+     * Get season
      *
-     * @return \Mby\CommunityBundle\Entity\Community 
+     * @return \Mby\CommunityBundle\Entity\Season 
      */
-    public function getCommunity()
+    public function getSeason()
     {
-        return $this->community;
+        return $this->season;
     }
 
     /**

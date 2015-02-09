@@ -1,0 +1,4 @@
+services:
+    membership_manager:
+        class:     Mby\CommunityBundy\Service\MembershipManager
+        arguments: [ "@doctrine.orm.entity_manager" ]

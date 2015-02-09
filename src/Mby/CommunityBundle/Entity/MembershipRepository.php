@@ -12,4 +12,26 @@ use Doctrine\ORM\EntityRepository;
  */
 class MembershipRepository extends EntityRepository
 {
+	public function findUserAllMemberships(int $userId)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                '	SELECT ms 
+                	FROM MbyCommunityBundle:Membership ms 
+                		JOIN MbyCommunityBundle:Responsibilty resp
+                		JOIN MbyCommunityBundle:Season sea
+                        JOIN MbyCommunityBundle:Community com
+                	WHERE ms.user_id = :userId
+                	ORDER BY com.name ASC, ms.fromDate ASC'
+            )
+            ->setParameter('userId', $userId);
+        
+        try {
+	        return $query->getResult();
+	    } catch (\Doctrine\ORM\NoResultException $e) {
+	        throw $e;
+	    }
+        
+    }
+
 }

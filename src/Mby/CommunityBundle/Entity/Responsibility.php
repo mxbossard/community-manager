@@ -27,7 +27,7 @@ class Responsibility extends AbstractBaseEntity
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=100)
+     * @ORM\Column(name="name", type="string", length=100, unique=true)
      * @Assert\NotBlank(message="responsibility.name.not_blank")
      * @Assert\Length(
      *      min = 3,

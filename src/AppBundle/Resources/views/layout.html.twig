@@ -14,13 +14,12 @@
 {% endblock %}
 
 {% block body %}
+
     <div id="body" class="container">
-        <div class="row">
-            <div id="header" class="col-sm-12">
-                {% block header %}
-                    {{ include('AppBundle::header.html.twig') }}
-                {% endblock %}
-            </div>
+        <div id="header" class="">
+            {% block header %}
+                {{ include('AppBundle::header.html.twig') }}
+            {% endblock %}
         </div>
 
         <div class="row">
@@ -52,13 +51,12 @@
 
         </div>
 
-        <div class="row">
-            <div id="footer" class="col-sm-12">
-                {% block footer %}
-                    {{ include('AppBundle::footer.html.twig') }}
-                {% endblock %}
-            </div>
+        <div id="footer" class="">
+            {% block footer %}
+                {{ include('AppBundle::footer.html.twig') }}
+            {% endblock %}
         </div>
+
     </div>
 
     <div class="row">

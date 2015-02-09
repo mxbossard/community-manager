@@ -74,16 +74,17 @@ class Community extends AbstractBaseEntity
     /**
      * @var \ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\Membership", mappedBy="community")
+     * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\Season", mappedBy="community")
      */
-    private $memberships;
+    private $seasons;
 
     public function __construct()
     {
         parent::__construct();
         
-        $this->memberships = new ArrayCollection();
+        $this->seasons = new ArrayCollection();
     }
+
 
     /**
      * Get id
@@ -211,35 +212,35 @@ class Community extends AbstractBaseEntity
     }
 
     /**
-     * Add memberships
+     * Add seasons
      *
-     * @param \Mby\CommunityBundle\Entity\Membership $memberships
+     * @param \Mby\CommunityBundle\Entity\Season $seasons
      * @return Community
      */
-    public function addMembership(\Mby\CommunityBundle\Entity\Membership $memberships)
+    public function addSeason(\Mby\CommunityBundle\Entity\Season $seasons)
     {
-        $this->memberships[] = $memberships;
+        $this->seasons[] = $seasons;
 
         return $this;
     }
 
     /**
-     * Remove memberships
+     * Remove seasons
      *
-     * @param \Mby\CommunityBundle\Entity\Membership $memberships
+     * @param \Mby\CommunityBundle\Entity\Season $seasons
      */
-    public function removeMembership(\Mby\CommunityBundle\Entity\Membership $memberships)
+    public function removeSeason(\Mby\CommunityBundle\Entity\Season $seasons)
     {
-        $this->memberships->removeElement($memberships);
+        $this->seasons->removeElement($seasons);
     }
 
     /**
-     * Get memberships
+     * Get seasons
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getMemberships()
+    public function getSeasons()
     {
-        return $this->memberships;
+        return $this->seasons;
     }
 }
