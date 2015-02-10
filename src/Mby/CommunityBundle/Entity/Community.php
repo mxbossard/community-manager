@@ -64,6 +64,20 @@ class Community extends AbstractBaseEntity
     private $note;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="joinable", type="boolean")
+     */
+    private $joinable;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="public", type="boolean")
+     */
+    private $public;
+
+    /**
      * @var Mby\UserBundle\Entity\User
      * 
      * @ORM\ManyToOne(targetEntity="Mby\UserBundle\Entity\User", inversedBy="ownedCommunities")
@@ -83,6 +97,8 @@ class Community extends AbstractBaseEntity
         parent::__construct();
         
         $this->seasons = new ArrayCollection();
+        $this->joinable = true;
+        $this->public = true;
     }
 
 
@@ -242,5 +258,51 @@ class Community extends AbstractBaseEntity
     public function getSeasons()
     {
         return $this->seasons;
+    }
+
+    /**
+     * Set joinable
+     *
+     * @param boolean $joinable
+     * @return Community
+     */
+    public function setJoinable($joinable)
+    {
+        $this->joinable = $joinable;
+
+        return $this;
+    }
+
+    /**
+     * Get joinable
+     *
+     * @return boolean 
+     */
+    public function getJoinable()
+    {
+        return $this->joinable;
+    }
+
+    /**
+     * Set public
+     *
+     * @param boolean $public
+     * @return Community
+     */
+    public function setPublic($public)
+    {
+        $this->public = $public;
+
+        return $this;
+    }
+
+    /**
+     * Get public
+     *
+     * @return boolean 
+     */
+    public function getPublic()
+    {
+        return $this->public;
     }
 }

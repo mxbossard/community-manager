@@ -68,16 +68,16 @@ class Membership extends AbstractBaseEntity
     /**
      * @var boolean
      *
-     * @ORM\Column(name="isAdministrator", type="boolean")
+     * @ORM\Column(name="administrator", type="boolean")
      */
-    private $isAdministrator;
+    private $administrator;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="isModerator", type="boolean")
+     * @ORM\Column(name="moderator", type="boolean")
      */
-    private $isModerator;
+    private $moderator;
 
     /**
      * @var string
@@ -154,52 +154,6 @@ class Membership extends AbstractBaseEntity
     public function getToDate()
     {
         return $this->toDate;
-    }
-
-    /**
-     * Set isAdministrator
-     *
-     * @param boolean $isAdministrator
-     * @return Membership
-     */
-    public function setIsAdministrator($isAdministrator)
-    {
-        $this->isAdministrator = $isAdministrator;
-
-        return $this;
-    }
-
-    /**
-     * Get isAdministrator
-     *
-     * @return boolean 
-     */
-    public function getIsAdministrator()
-    {
-        return $this->isAdministrator;
-    }
-
-    /**
-     * Set isModerator
-     *
-     * @param boolean $isModerator
-     * @return Membership
-     */
-    public function setIsModerator($isModerator)
-    {
-        $this->isModerator = $isModerator;
-
-        return $this;
-    }
-
-    /**
-     * Get isModerator
-     *
-     * @return boolean 
-     */
-    public function getIsModerator()
-    {
-        return $this->isModerator;
     }
 
     /**
@@ -302,5 +256,51 @@ class Membership extends AbstractBaseEntity
     public function getResponsibilities()
     {
         return $this->responsibilities;
+    }
+
+    /**
+     * Set administrator
+     *
+     * @param boolean $administrator
+     * @return Membership
+     */
+    public function setAdministrator($administrator)
+    {
+        $this->administrator = $administrator;
+
+        return $this;
+    }
+
+    /**
+     * Get administrator
+     *
+     * @return boolean 
+     */
+    public function getAdministrator()
+    {
+        return $this->administrator;
+    }
+
+    /**
+     * Set moderator
+     *
+     * @param boolean $moderator
+     * @return Membership
+     */
+    public function setModerator($moderator)
+    {
+        $this->moderator = $moderator;
+
+        return $this;
+    }
+
+    /**
+     * Get moderator
+     *
+     * @return boolean 
+     */
+    public function getModerator()
+    {
+        return $this->moderator;
     }
 }

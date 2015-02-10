@@ -2,3 +2,8 @@ services:
     membership_manager:
         class:     Mby\CommunityBundy\Service\MembershipManager
         arguments: [ "@doctrine.orm.entity_manager" ]
+
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+            - { name: twig.extension }

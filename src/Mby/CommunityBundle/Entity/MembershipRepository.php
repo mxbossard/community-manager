@@ -4,6 +4,8 @@ namespace Mby\CommunityBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
+use Mby\UserBundle\Entity\User;
+
 /**
  * MembershipRepository
  *
@@ -12,7 +14,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class MembershipRepository extends EntityRepository
 {
-	public function findUserAllMemberships(int $userId)
+	public function findAllUserMemberships(User $user)
     {
         $query = $this->getEntityManager()
             ->createQuery(
@@ -22,15 +24,57 @@ class MembershipRepository extends EntityRepository
                 		JOIN MbyCommunityBundle:Season sea
                         JOIN MbyCommunityBundle:Community com
                 	WHERE ms.user_id = :userId
-                	ORDER BY com.name ASC, ms.fromDate ASC'
+                	ORDER BY com.name ASC, sea.fromDate ASC, ms.fromDate ASC'
             )
-            ->setParameter('userId', $userId);
+            ->setParameter('userId', $user->getId());
         
         try {
 	        return $query->getResult();
 	    } catch (\Doctrine\ORM\NoResultException $e) {
 	        throw $e;
 	    }
+        
+    }
+
+    public function findAllUserCommunities(User $user)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                '   SELECT c
+                    FROM MbyCommunityBundle:Community c
+                        JOIN c.seasons s
+                        JOIN s.memberships m
+                        JOIN m.responsibilities r
+                    WHERE m.user = :userId
+                    ORDER BY c.name, s.fromDate
+                    '
+            )
+            ->setParameter('userId', $user->getId());
+        
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            throw $e;
+        }
+        
+    }
+
+    public function findAllCommunities()
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                '   SELECT c
+                    FROM MbyCommunityBundle:Community c
+                        JOIN c.seasons s
+                    ORDER BY c.name, s.fromDate
+                    '
+            );
+        
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            throw $e;
+        }
         
     }
 

@@ -3,6 +3,9 @@
 namespace Mby\CommunityBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Season
@@ -25,14 +28,14 @@ class Season extends AbstractBaseEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="fromDate", type="datetime")
+     * @ORM\Column(name="fromDate", type="date")
      */
     private $fromDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="toDate", type="datetime", nullable=true)
+     * @ORM\Column(name="toDate", type="date", nullable=true)
      */
     private $toDate;
 
@@ -40,6 +43,13 @@ class Season extends AbstractBaseEntity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=100, nullable=false)
+     * @Assert\NotBlank(message="season.name.not_blank")
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 100,
+     *      minMessage = "season.name.length_min",
+     *      maxMessage = "season.name.length_max"
+     * )
      */
     private $name;
 
@@ -53,7 +63,7 @@ class Season extends AbstractBaseEntity
     /**
      * @var Mby\CommunityBundle\Entity\Community
      * 
-     * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Community", inversedBy="memberships")
+     * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Community", inversedBy="seasons")
      * @ORM\JoinColumn(name="community_id", referencedColumnName="id", nullable=false)
      */
     private $community;
@@ -61,7 +71,7 @@ class Season extends AbstractBaseEntity
     /**
      * @var \ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\Membership", mappedBy="community")
+     * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\Membership", mappedBy="season")
      */
     private $memberships;
 
