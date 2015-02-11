@@ -36,46 +36,26 @@ class MembershipRepository extends EntityRepository
         
     }
 
-    public function findAllUserCommunities(User $user)
+    public function loadResponsibilities(User $user, Season $season)
     {
         $query = $this->getEntityManager()
             ->createQuery(
-                '   SELECT c
-                    FROM MbyCommunityBundle:Community c
-                        JOIN c.seasons s
-                        JOIN s.memberships m
+                '   SELECT m, r
+                    FROM MbyCommunityBundle:Membership m
                         JOIN m.responsibilities r
-                    WHERE m.user = :userId
-                    ORDER BY c.name, s.fromDate
-                    '
+                    WHERE m.user = :userId AND m.season = :seasonId
+                    ORDER BY r.id ASC
+                '
             )
-            ->setParameter('userId', $user->getId());
+            ->setParameter('userId', $user->getId())
+            ->setParameter('seasonId', $season->getId());
         
         try {
-            return $query->getResult();
+            return $query->getSingleResult();
         } catch (\Doctrine\ORM\NoResultException $e) {
             throw $e;
         }
         
     }
-
-    public function findAllCommunities()
-    {
-        $query = $this->getEntityManager()
-            ->createQuery(
-                '   SELECT c
-                    FROM MbyCommunityBundle:Community c
-                        JOIN c.seasons s
-                    ORDER BY c.name, s.fromDate
-                    '
-            );
-        
-        try {
-            return $query->getResult();
-        } catch (\Doctrine\ORM\NoResultException $e) {
-            throw $e;
-        }
-        
-    }
-
+    
 }

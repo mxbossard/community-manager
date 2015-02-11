@@ -90,3 +90,5 @@ fos_user:
     resetting:
         email:
             #template: AcmeDemoBundle:User:resetting.email.twig
+
+white_october_breadcrumbs: ~

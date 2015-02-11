@@ -3,44 +3,49 @@
 namespace Mby\CommunityBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Mby\CommunityBundle\Entity\Responsibility;
 
-class LoadResponsibilityData extends AbstractFixture implements FixtureInterface
+class LoadResponsibilityData extends AbstractFixture implements OrderedFixtureInterface
 {
     /**
      * {@inheritDoc}
      */
     public function load(ObjectManager $manager)
     {
-        $applicant = new Responsibility();
-        $applicant->setName('applicant');
-        $manager->persist($applicant);
-
-        $admin = new Responsibility();
-        $admin->setName('admin');
-        $manager->persist($admin);
-
-        $moderator = new Responsibility();
-        $moderator->setName('moderator');
-        $manager->persist($moderator);
-
         $president = new Responsibility();
         $president->setName('president');
         $manager->persist($president);
+
+        $vice_president = new Responsibility();
+        $vice_president->setName('vice_president');
+        $manager->persist($vice_president);
+
+        $treasurer = new Responsibility();
+        $treasurer->setName('treasurer');
+        $manager->persist($treasurer);
 
         $secretary = new Responsibility();
         $secretary->setName('secretary');
         $manager->persist($secretary);
 
+        $member = new Responsibility();
+        $member->setName('member');
+        $manager->persist($member);
+        
+        $applicant = new Responsibility();
+        $applicant->setName('applicant');
+        $manager->persist($applicant);
+
         $manager->flush();
 
         $this->addReference('resp-applicant', $applicant);
-        $this->addReference('resp-admin', $admin);
-        $this->addReference('resp-moderator', $moderator);
+        $this->addReference('resp-member', $member);
         $this->addReference('resp-president', $president);
+        $this->addReference('resp-vice_president', $vice_president);
+        $this->addReference('resp-treasurer', $treasurer);
         $this->addReference('resp-secretary', $secretary);
     }
 

@@ -13,18 +13,17 @@ use Doctrine\ORM\EntityRepository;
 class ResponsibilityRepository extends EntityRepository
 {
 
-	const APPLICANT_RESPONSIBILITY_ID = 1;
+	const APPLICANT_NAME = 'applicant';
+    const MEMBER_NAME = 'member';
 
-	public function findApplication()
+	public function findByName(string $name)
     {
-    	return $this->find(APPLICANT_RESPONSIBILITY_ID);
-
-        // return $this->getEntityManager()
-        //     ->createQuery(
-        //         'SELECT r FROM MbyCommunityBundle:Responsibility r WHERE r.name = :respName'
-        //     )
-        //     ->setParameter('respName', APPLICANT_RESPONSIBILITY_ID)
-        //     ->getSingleResult();
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM MbyCommunityBundle:Responsibility r WHERE r.name = :respName'
+            )
+            ->setParameter('respName', $name)
+            ->getSingleResult();
     }
 
 }

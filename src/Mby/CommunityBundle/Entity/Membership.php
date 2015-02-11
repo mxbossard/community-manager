@@ -92,10 +92,10 @@ class Membership extends AbstractBaseEntity
      * @ORM\ManyToMany(targetEntity="Mby\CommunityBundle\Entity\Responsibility")
      * @ORM\JoinTable(name="mby_memberships_responsibilities",
      *      joinColumns={
-     *               @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false, unique=true),
-     *               @ORM\JoinColumn(name="season_id", referencedColumnName="season_id", nullable=false, unique=true)
+     *               @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false),
+     *               @ORM\JoinColumn(name="season_id", referencedColumnName="season_id", nullable=false)
      *           },
-     *      inverseJoinColumns={@ORM\JoinColumn(name="responsibility_id", referencedColumnName="id", nullable=false, unique=true)}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="responsibility_id", referencedColumnName="id", nullable=false)}
      * )
      */
     private $responsibilities;
@@ -104,8 +104,8 @@ class Membership extends AbstractBaseEntity
     {
         parent::__construct();
         
-        $this->isAdministrator = false;
-        $this->isModerator = false;
+        $this->administrator = false;
+        $this->moderator = false;
         $this->responsibilities = new ArrayCollection();
     }
 

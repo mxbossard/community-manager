@@ -4,30 +4,29 @@ namespace Mby\CommunityBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\View\TwitterBootstrapView;
 
-use Mby\CommunityBundle\Entity\Community;
-use Mby\CommunityBundle\Form\CommunityType;
-use Mby\CommunityBundle\Form\CommunityFilterType;
+use Mby\CommunityBundle\Entity\Season;
+use Mby\CommunityBundle\Form\SeasonType;
+use Mby\CommunityBundle\Form\SeasonFilterType;
 
 /**
- * Community controller.
+ * Season controller.
  *
- * @Route("/communities")
+ * @Route("/seasons")
  */
-class CommunityController extends Controller
+class SeasonController extends Controller
 {
+
     /**
-     * Lists all Community entities.
+     * Lists all Season entities.
      *
-     * @Route("/", name="communities")
+     * @Route("/", name="seasons")
      * @Method("GET")
      * @Template()
      */
@@ -52,13 +51,13 @@ class CommunityController extends Controller
     {
         $request = $this->getRequest();
         $session = $request->getSession();
-        $filterForm = $this->createForm(new CommunityFilterType());
+        $filterForm = $this->createForm(new SeasonFilterType());
         $em = $this->getDoctrine()->getManager();
-        $queryBuilder = $em->getRepository('MbyCommunityBundle:Community')->createQueryBuilder('e');
+        $queryBuilder = $em->getRepository('MbyCommunityBundle:Season')->createQueryBuilder('e');
 
         // Reset filter
         if ($request->get('filter_action') == 'reset') {
-            $session->remove('CommunityControllerFilter');
+            $session->remove('SeasonControllerFilter');
         }
 
         // Filter action
@@ -71,13 +70,13 @@ class CommunityController extends Controller
                 $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($filterForm, $queryBuilder);
                 // Save filter to session
                 $filterData = $filterForm->getData();
-                $session->set('CommunityControllerFilter', $filterData);
+                $session->set('SeasonControllerFilter', $filterData);
             }
         } else {
             // Get filter from session
-            if ($session->has('CommunityControllerFilter')) {
-                $filterData = $session->get('CommunityControllerFilter');
-                $filterForm = $this->createForm(new CommunityFilterType(), $filterData);
+            if ($session->has('SeasonControllerFilter')) {
+                $filterData = $session->get('SeasonControllerFilter');
+                $filterForm = $this->createForm(new SeasonFilterType(), $filterData);
                 $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($filterForm, $queryBuilder);
             }
         }
@@ -102,7 +101,7 @@ class CommunityController extends Controller
         $me = $this;
         $routeGenerator = function($page) use ($me)
         {
-            return $me->generateUrl('communities', array('page' => $page));
+            return $me->generateUrl('seasons', array('page' => $page));
         };
 
         // Paginator - view
@@ -118,16 +117,16 @@ class CommunityController extends Controller
     }
 
     /**
-     * Creates a new Community entity.
+     * Creates a new Season entity.
      *
-     * @Route("/", name="communities_create")
+     * @Route("/", name="seasons_create")
      * @Method("POST")
-     * @Template("MbyCommunityBundle:Community:new.html.twig")
+     * @Template("MbyCommunityBundle:Season:new.html.twig")
      */
     public function createAction(Request $request)
     {
-        $entity  = new Community();
-        $form = $this->createForm(new CommunityType(), $entity);
+        $entity  = new Season();
+        $form = $this->createForm(new SeasonType(), $entity);
         $form->bind($request);
 
         if ($form->isValid()) {
@@ -136,7 +135,7 @@ class CommunityController extends Controller
             $em->flush();
             $this->get('session')->getFlashBag()->add('success', 'flash.create.success');
 
-            return $this->redirect($this->generateUrl('communities_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('seasons_show', array('id' => $entity->getId())));
         }
 
         return array(
@@ -146,16 +145,16 @@ class CommunityController extends Controller
     }
 
     /**
-     * Displays a form to create a new Community entity.
+     * Displays a form to create a new Season entity.
      *
-     * @Route("/new", name="communities_new")
+     * @Route("/new", name="seasons_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction()
     {
-        $entity = new Community();
-        $form   = $this->createForm(new CommunityType(), $entity);
+        $entity = new Season();
+        $form   = $this->createForm(new SeasonType(), $entity);
 
         return array(
             'entity' => $entity,
@@ -164,9 +163,9 @@ class CommunityController extends Controller
     }
 
     /**
-     * Finds and displays a Community entity.
+     * Finds and displays a Season entity.
      *
-     * @Route("/{id}", name="communities_show")
+     * @Route("/{id}", name="seasons_show")
      * @Method("GET")
      * @Template()
      */
@@ -174,10 +173,10 @@ class CommunityController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('MbyCommunityBundle:Community')->find($id);
+        $entity = $em->getRepository('MbyCommunityBundle:Season')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Community entity.');
+            throw $this->createNotFoundException('Unable to find Season entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -189,9 +188,9 @@ class CommunityController extends Controller
     }
 
     /**
-     * Displays a form to edit an existing Community entity.
+     * Displays a form to edit an existing Season entity.
      *
-     * @Route("/{id}/edit", name="communities_edit")
+     * @Route("/{id}/edit", name="seasons_edit")
      * @Method("GET")
      * @Template()
      */
@@ -199,13 +198,13 @@ class CommunityController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('MbyCommunityBundle:Community')->find($id);
+        $entity = $em->getRepository('MbyCommunityBundle:Season')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Community entity.');
+            throw $this->createNotFoundException('Unable to find Season entity.');
         }
 
-        $editForm = $this->createForm(new CommunityType(), $entity);
+        $editForm = $this->createForm(new SeasonType(), $entity);
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
@@ -216,24 +215,24 @@ class CommunityController extends Controller
     }
 
     /**
-     * Edits an existing Community entity.
+     * Edits an existing Season entity.
      *
-     * @Route("/{id}", name="communities_update")
+     * @Route("/{id}", name="seasons_update")
      * @Method("PUT")
-     * @Template("MbyCommunityBundle:Community:edit.html.twig")
+     * @Template("MbyCommunityBundle:Season:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('MbyCommunityBundle:Community')->find($id);
+        $entity = $em->getRepository('MbyCommunityBundle:Season')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Community entity.');
+            throw $this->createNotFoundException('Unable to find Season entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createForm(new CommunityType(), $entity);
+        $editForm = $this->createForm(new SeasonType(), $entity);
         $editForm->bind($request);
 
         if ($editForm->isValid()) {
@@ -241,7 +240,7 @@ class CommunityController extends Controller
             $em->flush();
             $this->get('session')->getFlashBag()->add('success', 'flash.update.success');
 
-            return $this->redirect($this->generateUrl('communities_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('seasons_edit', array('id' => $id)));
         } else {
             $this->get('session')->getFlashBag()->add('error', 'flash.update.error');
         }
@@ -254,9 +253,9 @@ class CommunityController extends Controller
     }
 
     /**
-     * Deletes a Community entity.
+     * Deletes a Season entity.
      *
-     * @Route("/{id}", name="communities_delete")
+     * @Route("/{id}", name="seasons_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -266,10 +265,10 @@ class CommunityController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('MbyCommunityBundle:Community')->find($id);
+            $entity = $em->getRepository('MbyCommunityBundle:Season')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Community entity.');
+                throw $this->createNotFoundException('Unable to find Season entity.');
             }
 
             $em->remove($entity);
@@ -279,11 +278,11 @@ class CommunityController extends Controller
             $this->get('session')->getFlashBag()->add('error', 'flash.delete.error');
         }
 
-        return $this->redirect($this->generateUrl('communities'));
+        return $this->redirect($this->generateUrl('seasons'));
     }
 
     /**
-     * Creates a form to delete a Community entity by id.
+     * Creates a form to delete a Season entity by id.
      *
      * @param mixed $id The entity id
      *

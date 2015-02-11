@@ -2,13 +2,13 @@
 
 {% block page %}
 
-<h1>My Communities</h1>
-
-{% for community in communities %}
+<h1>My Seasons</h1>
+        
+{% for season in seasons %}
     <div>
-        {{ community.name }}
+        {{ season.community.name }}
+
         <ul>
-        {% for season in community.seasons %}
             <li>
                 {{ season.name }} - 
                 From: {{ season.fromDate | localizeddate('medium', 'none', app.request.locale) }} 
@@ -40,7 +40,7 @@
                     {% endfor %}
                 </ul>
             </li>
-        {% endfor %}
+
         </ul>
     </div>
 {% endfor %}

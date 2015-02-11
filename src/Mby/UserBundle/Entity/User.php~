@@ -166,37 +166,4 @@ class User extends BaseUser
     {
         return $this->memberships;
     }
-
-    /**
-     * Add privileges
-     *
-     * @param \Mby\CommunityBundle\Entity\CommunityPrivilege $privileges
-     * @return User
-     */
-    public function addPrivilege(\Mby\CommunityBundle\Entity\CommunityPrivilege $privileges)
-    {
-        $this->privileges[] = $privileges;
-
-        return $this;
-    }
-
-    /**
-     * Remove privileges
-     *
-     * @param \Mby\CommunityBundle\Entity\CommunityPrivilege $privileges
-     */
-    public function removePrivilege(\Mby\CommunityBundle\Entity\CommunityPrivilege $privileges)
-    {
-        $this->privileges->removeElement($privileges);
-    }
-
-    /**
-     * Get privileges
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPrivileges()
-    {
-        return $this->privileges;
-    }
 }

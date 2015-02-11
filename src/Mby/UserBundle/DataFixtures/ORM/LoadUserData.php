@@ -3,7 +3,7 @@
 namespace Mby\UserBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Mby\UserBundle\Entity\User;
 
-class LoadUserData extends AbstractFixture implements FixtureInterface, ContainerAwareInterface
+class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
 
     /**
@@ -39,6 +39,7 @@ class LoadUserData extends AbstractFixture implements FixtureInterface, Containe
         $admin->setPlainPassword('test');
         $admin->setEmail('admin@test.fr');
         $admin->setEnabled(true);
+        $admin->addRole('ROLE_ADMIN');
         $manager->persist($admin);
 
         $userA = new User();

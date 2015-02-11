@@ -1,9 +1,16 @@
 services:
-    membership_manager:
-        class:     Mby\CommunityBundy\Service\MembershipManager
-        arguments: [ "@doctrine.orm.entity_manager" ]
 
     twig.extension.intl:
         class: Twig_Extensions_Extension_Intl
         tags:
             - { name: twig.extension }
+
+    membership_manager:
+        class:     Mby\CommunityBundy\Service\MembershipManager
+        arguments: [ "@doctrine.orm.entity_manager" ]
+    privilege_manager:
+        class:     Mby\CommunityBundy\Service\PrivilegeManager
+        arguments: [ "@doctrine.orm.entity_manager" ]
+    season_manager:
+        class:     Mby\CommunityBundy\Service\SeasonManager
+        arguments: [ "@doctrine.orm.entity_manager", "@privilege_manager" ]

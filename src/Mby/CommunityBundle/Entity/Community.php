@@ -78,29 +78,35 @@ class Community extends AbstractBaseEntity
     private $public;
 
     /**
-     * @var Mby\UserBundle\Entity\User
-     * 
-     * @ORM\ManyToOne(targetEntity="Mby\UserBundle\Entity\User", inversedBy="ownedCommunities")
-     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", nullable=false)
-     */
-    private $owner;
-
-    /**
      * @var \ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\Season", mappedBy="community")
      */
     private $seasons;
 
+    /**
+     * @var \ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\CommunityPrivilege", mappedBy="community")
+     */
+    private $privileges;
+
     public function __construct()
     {
         parent::__construct();
         
         $this->seasons = new ArrayCollection();
+        $this->privileges = new ArrayCollection();
         $this->joinable = true;
         $this->public = true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString() {
+        return $this->name;
+    }
 
     /**
      * Get id
@@ -205,29 +211,6 @@ class Community extends AbstractBaseEntity
     }
 
     /**
-     * Set owner
-     *
-     * @param \Mby\UserBundle\Entity\User $owner
-     * @return Community
-     */
-    public function setOwner(\Mby\UserBundle\Entity\User $owner)
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    /**
-     * Get owner
-     *
-     * @return \Mby\UserBundle\Entity\User 
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
      * Add seasons
      *
      * @param \Mby\CommunityBundle\Entity\Season $seasons
@@ -304,5 +287,38 @@ class Community extends AbstractBaseEntity
     public function getPublic()
     {
         return $this->public;
+    }
+
+    /**
+     * Add privileges
+     *
+     * @param \Mby\CommunityBundle\Entity\CommunityPrivilege $privileges
+     * @return Community
+     */
+    public function addPrivilege(\Mby\CommunityBundle\Entity\CommunityPrivilege $privileges)
+    {
+        $this->privileges[] = $privileges;
+
+        return $this;
+    }
+
+    /**
+     * Remove privileges
+     *
+     * @param \Mby\CommunityBundle\Entity\CommunityPrivilege $privileges
+     */
+    public function removePrivilege(\Mby\CommunityBundle\Entity\CommunityPrivilege $privileges)
+    {
+        $this->privileges->removeElement($privileges);
+    }
+
+    /**
+     * Get privileges
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPrivileges()
+    {
+        return $this->privileges;
     }
 }

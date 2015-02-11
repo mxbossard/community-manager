@@ -9,7 +9,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use Mby\UserBundle\Entity\User;
-use Mby\UserBundle\Service\MembershipManager;
+use Mby\CommunityBundle\Entity\Community;
+use Mby\CommunityBundle\Service\MembershipManager;
 
 class MembershipController extends Controller
 {
@@ -23,8 +24,7 @@ class MembershipController extends Controller
     public function applyAction(Community $community)
     {
      
-        $msManager = $this->get(MembershipManager::NAME);
-        $msManager->create();
+        $msManager = $this->get(MembershipManager::SERVICE_NAME);
 
         return array('name' => $name);
 
@@ -41,7 +41,7 @@ class MembershipController extends Controller
         $user= $this->get('security.context')->getToken()->getUser();
 
         $communities = $this->getDoctrine()
-        ->getRepository('MbyCommunityBundle:Membership')
+        ->getRepository('MbyCommunityBundle:Community')
         ->findAllUserCommunities($user);
 
         return $this->render('MbyCommunityBundle:Membership:myCommunities.html.twig', array(
@@ -61,7 +61,7 @@ class MembershipController extends Controller
         $user= $this->get('security.context')->getToken()->getUser();
 
         $communities = $this->getDoctrine()
-        ->getRepository('MbyCommunityBundle:Membership')
+        ->getRepository('MbyCommunityBundle:Community')
         ->findAllCommunities();
 
         return $this->render('MbyCommunityBundle:Membership:myCommunities.html.twig', array(
@@ -70,4 +70,23 @@ class MembershipController extends Controller
 
     }
 
+    /**
+     * Register a user's membership to a community.
+     *
+     * @Route("/mySeasons", name="mySeasons")
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function mySeasonsAction()
+    {
+        $user= $this->get('security.context')->getToken()->getUser();
+
+        $seasons = $this->getDoctrine()
+        ->getRepository('MbyCommunityBundle:Season')
+        ->findAllUserSeasons($user);
+
+        return $this->render('MbyCommunityBundle:Membership:mySeasons.html.twig', array(
+            'seasons' => $seasons
+        ));
+
+    }
 }

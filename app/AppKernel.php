@@ -23,6 +23,7 @@ class AppKernel extends Kernel
             new Mby\UserBundle\MbyUserBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Mby\CommunityBundle\MbyCommunityBundle(),
+            new WhiteOctober\BreadcrumbsBundle\WhiteOctoberBreadcrumbsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

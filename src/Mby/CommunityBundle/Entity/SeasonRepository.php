@@ -4,6 +4,9 @@ namespace Mby\CommunityBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
+use Mby\UserBundle\Entity\User;
+use Mby\CommunityBundle\Entity\Community;
+
 /**
  * SeasonRepository
  *
@@ -12,4 +15,49 @@ use Doctrine\ORM\EntityRepository;
  */
 class SeasonRepository extends EntityRepository
 {
+
+    public function findAllUserSeasons(User $user)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                '   SELECT s, c, m, r
+                    FROM MbyCommunityBundle:Season s
+                        JOIN s.community c
+                        JOIN s.memberships m
+                        JOIN m.responsibilities r
+                    WHERE m.user = :userId
+                    ORDER BY s.fromDate DESC, r.id ASC, c.name ASC
+                '
+            )
+            ->setParameter('userId', $user->getId());
+        
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            throw $e;
+        }
+        
+    }
+
+    public function findLastSeason(Community $community)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                '   SELECT s
+                    FROM MbyCommunityBundle:Season s
+                    WHERE s.community_id = :communityId
+                    ORDER BY s.fromDate
+                    LIMIT 1
+                '
+            )
+            ->setParameter('communityId', $community->getId());
+        
+        try {
+            return $query->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            throw $e;
+        }
+        
+    }
+
 }

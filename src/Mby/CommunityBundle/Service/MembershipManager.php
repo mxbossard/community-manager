@@ -8,11 +8,12 @@ use Mby\UserBundle\Entity\User;
 use Mby\CommunityBundle\Entity\Season;
 use Mby\CommunityBundle\Entity\Membership;
 use Mby\CommunityBundle\Entity\Responsibility;
+use Mby\CommunityBundle\Entity\ResponsibilityRepository;
 
 class MembershipManager
 {
 
-    public const NAME = 'membserhip_manager';
+    const SERVICE_NAME = 'membserhip_manager';
 
     /**
      * @var EntityManager 
@@ -24,39 +25,58 @@ class MembershipManager
         $this->em = $entityManager;
     }
 
+    public function apply(User $user, Season $season, \Date $fromDate = null, \Date $toDate = null)
+    {
+        $respRepo = $this->em->getRepository('MbyCommunityBundle:Responsibility');
+        $respApplicant = $respRepo->findByCode(ResponsibilityRepository::APPLICANT_CODE);
+
+        $this->create($user, $season, $respApplicant, $fromDate, $toDate);
+    }
+
+    public function validApplication(Membership $membership)
+    {
+        $respRepo = $this->em->getRepository('MbyCommunityBundle:Responsibility');
+        $respApplicant = $respRepo->findByCode(ResponsibilityRepository::APPLICANT_CODE);
+        $respMember = $respRepo->findByCode(ResponsibilityRepository::MEMBER_CODE);
+
+        $membership->removeResponsibility($respApplicant);
+        $membership->addResponsibility($respMember);
+
+        $this->update($membership);
+    }
+
 	/**
 	 * Register a user's membership to a season with responsibilities.
 	 *
      */
-    public function create(User $user, Season $season, Responsibility $responsibility, \Date $fromDate = null, \Date $toDate = null)
+    protected function create(User $user, Season $season, Responsibility $responsibility, \Date $fromDate = null, \Date $toDate = null)
     {
         $ms = new Membership();
         $ms->setUser($user);
         $ms->setSeason($season);
-        $ms->addResponsibility($responsibility)
+        $ms->addResponsibility($responsibility);
 
         // if ($fromDate == null) {
         //     $fromDate = $season->getFromDate();
         // }
-        
+
         $ms->setFromDate($fromDate);
         $ms->setToDate($toDate);
 
-        $msRepo = $em->getRepository('MbyCommunityBundle:Membership');
+        $msRepo = $this->em->getRepository('MbyCommunityBundle:Membership');
         
-        $em->persist($ms);
-        $em->flush();
+        $this->em->persist($ms);
+        $this->em->flush();
     }
-
 
     /**
      * Register a user's membership to a community with responsibilities.
      *
      */
-    public function update(Membership $membership)
+    protected function update(Membership $membership)
     {
-        $em->update($membership);
-        $em->flush();
+        $this->em->update($membership);
+        $this->em->flush();
     }
 
 

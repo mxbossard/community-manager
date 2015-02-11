@@ -3,12 +3,12 @@
 namespace Mby\CommunityBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Mby\CommunityBundle\Entity\Season;
 
-class LoadSeasonData extends AbstractFixture implements FixtureInterface
+class LoadSeasonData extends AbstractFixture implements OrderedFixtureInterface
 {
     /**
      * {@inheritDoc}
@@ -63,6 +63,6 @@ class LoadSeasonData extends AbstractFixture implements FixtureInterface
      */
     public function getOrder()
     {
-        return 2; // the order in which fixtures will be loaded
+        return 3; // the order in which fixtures will be loaded
     }
 }
