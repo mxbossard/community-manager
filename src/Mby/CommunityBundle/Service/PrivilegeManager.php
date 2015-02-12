@@ -1,6 +1,6 @@
 <?php
 
-namespace Mby\CommunityBundle\Controller;
+namespace Mby\CommunityBundle\Service;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -33,9 +33,9 @@ class PrivilegeManager
 
     public function isOwner(User $user, Community $community)
     {
-        $privilegeAdmin = $this->privilegeRepo->find(PrivilegeRepository::OWNER_CODE);
+        $privilegeOwner = $this->privilegeRepo->find(PrivilegeRepository::OWNER_CODE);
 
-        return $this->findPrivilege($user, $community, $privilegeAdmin);
+        return $this->findPrivilege($user, $community, $privilegeOwner);
     }
 
     public function isAdministrator(User $user, Community $community)
@@ -47,9 +47,69 @@ class PrivilegeManager
 
     public function isModerator(User $user, Community $community)
     {
-        $privilegeAdmin = $this->privilegeRepo->find(PrivilegeRepository::MODERATOR_CODE);
+        $privilegeModerator = $this->privilegeRepo->find(PrivilegeRepository::MODERATOR_CODE);
 
-        return $this->findPrivilege($user, $community, $privilegeAdmin);
+        return $this->findPrivilege($user, $community, $privilegeModerator);
+    }
+
+    public function grantOwnerPrivilege(User $user, User $target, Community $community)
+    {
+        if (! $this->isOwner($user, $community)) {
+            throw new Exception("user must be owner to grant owner privilege");
+        }
+
+        $privilege= $this->privilegeRepo->find(PrivilegeRepository::OWNER_CODE);
+        $target->addPrivilege($privilege);
+    }
+
+    public function grantAdministratorPrivilege(User $user, User $target, Community $community)
+    {
+        if (! $this->isAdministrator($user, $community) && ! $this->isOwner($user, $community)) {
+            throw new Exception("user must be owner or administrator to grant administrator privilege");
+        }
+
+        $privilege= $this->privilegeRepo->find(PrivilegeRepository::ADMIN_CODE);
+        $target->addPrivilege($privilege);
+    }
+
+    public function grantModeratorPrivilege(User $user, User $target, Community $community)
+    {
+        if (! $this->isAdministrator($user, $community)) {
+            throw new Exception("user must be administrator to grant moderator privilege");
+        }
+
+        $privilege = $this->privilegeRepo->find(PrivilegeRepository::MODERATOR_CODE);
+        $target->addPrivilege($privilege);
+    }
+
+    public function revokeOwnerPrivilege(User $user, User $target, Community $community)
+    {
+        if (! $this->isOwner($user, $community)) {
+            throw new Exception("user must be owner to revoke owner privilege");
+        }
+
+        $privilege= $this->privilegeRepo->find(PrivilegeRepository::OWNER_CODE);
+        $target->removePrivilege($privilege);
+    }
+
+    public function revokeAdministratorPrivilege(User $user, User $target, Community $community)
+    {
+        if (! $this->isOwner($user, $community)) {
+            throw new Exception("user must be owner to revoke administrator privilege");
+        }
+
+        $privilege= $this->privilegeRepo->find(PrivilegeRepository::ADMIN_CODE);
+        $target->removePrivilege($privilege);
+    }
+
+    public function revokeModeratorPrivilege(User $user, User $target, Community $community)
+    {
+        if (! $this->isAdministrator($user, $community)) {
+            throw new Exception("user must be administrator to revoke moderator privilege");
+        }
+
+        $privilege = $this->privilegeRepo->find(PrivilegeRepository::MODERATOR_CODE);
+        $target->removePrivilege($privilege);
     }
 
     /**
@@ -61,7 +121,7 @@ class PrivilegeManager
     protected function findPrivilege(User $user, Community $community, $privilegeAdmin)
     {
         foreach ($user->getPrivileges() as $privilege) {
-            if ($privilege->getCommunity()->getId() === $community . getId()
+            if ($privilege->getCommunity()->getId() === $community->getId()
                 && $privilege->getId() === $privilegeAdmin->getId()
             ) {
                 return true;

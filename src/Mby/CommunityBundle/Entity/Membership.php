@@ -25,7 +25,7 @@ class Membership extends AbstractBaseEntity
     //private $id;
 
     /**
-     * @var Mby\UserBundle\Entity\User
+     * @var \Mby\UserBundle\Entity\User
      * 
      * @ORM\Id 
      * @ORM\ManyToOne(targetEntity="Mby\UserBundle\Entity\User", inversedBy="memberships")
@@ -34,7 +34,7 @@ class Membership extends AbstractBaseEntity
     private $user;
 
     /**
-     * @var Mby\CommunityBundle\Entity\Community
+     * @var \Mby\CommunityBundle\Entity\Community
      * 
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Community", inversedBy="memberships")
@@ -43,7 +43,7 @@ class Membership extends AbstractBaseEntity
     //private $community;
 
     /**
-     * @var Mby\CommunityBundle\Entity\Season
+     * @var \Mby\CommunityBundle\Entity\Season
      * 
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Season", inversedBy="memberships")
@@ -64,20 +64,6 @@ class Membership extends AbstractBaseEntity
      * @ORM\Column(name="toDate", type="date", nullable=true)
      */
     private $toDate;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="administrator", type="boolean")
-     */
-    private $administrator;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="moderator", type="boolean")
-     */
-    private $moderator;
 
     /**
      * @var string
@@ -258,49 +244,4 @@ class Membership extends AbstractBaseEntity
         return $this->responsibilities;
     }
 
-    /**
-     * Set administrator
-     *
-     * @param boolean $administrator
-     * @return Membership
-     */
-    public function setAdministrator($administrator)
-    {
-        $this->administrator = $administrator;
-
-        return $this;
-    }
-
-    /**
-     * Get administrator
-     *
-     * @return boolean 
-     */
-    public function getAdministrator()
-    {
-        return $this->administrator;
-    }
-
-    /**
-     * Set moderator
-     *
-     * @param boolean $moderator
-     * @return Membership
-     */
-    public function setModerator($moderator)
-    {
-        $this->moderator = $moderator;
-
-        return $this;
-    }
-
-    /**
-     * Get moderator
-     *
-     * @return boolean 
-     */
-    public function getModerator()
-    {
-        return $this->moderator;
-    }
 }

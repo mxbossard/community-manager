@@ -1,0 +1,52 @@
+<div class="season">
+    <h2>{{ season.community.name }} - {{ season.name }}</h2>
+    <p>
+        From: {{ season.fromDate | localizeddate('medium', 'none', app.request.locale) }}
+        To : {{ season.toDate | localizeddate('medium', 'none', app.request.locale) }}
+    </p>
+
+    {% if season.memberships is not empty %}
+        {# the user is member of the community #}
+
+        {% set membership = season.memberships.first %}
+        {% set responsibilities = membership.responsibilities %}
+
+        <h3>My responsibilities</h3>
+        <ul>
+            {% for responsibility in responsibilities %}
+                <li>{{ responsibility.name }}</li>
+            {% endfor %}
+
+        </ul>
+
+    {% else %}
+
+        {% set responsibilities = {} %}
+
+    {% endif %}
+
+    {% if 'applicant' in responsibilities %}
+        <form action="{{ path("membership_cancelApplication") }}" method="post">
+            <input type="hidden" name="user_id" value="{{ membership.user.id }}"/>
+            <input type="hidden" name="season_id" value="{{ season.id }}"/>
+            <button class="btn btn-danger">Cancel my application</button>
+        </form>
+
+    {% elseif 'member' in responsibilities %}
+            Member !
+
+    {% else %}
+        <form action="{{ path("membership_apply") }}" method="post">
+            <input type="hidden" name="season_id" value="{{ season.id }}"/>
+            <button class="btn btn-primary">Apply</button>
+        </form>
+
+    {% endif %}
+
+    {% if 'president' in responsibilities %}
+        President !
+    {% endif %}
+
+    <h3>My privileges</h3>
+
+</div>

@@ -5,44 +5,7 @@
 <h1>My Seasons</h1>
         
 {% for season in seasons %}
-    <div>
-        {{ season.community.name }}
-
-        <ul>
-            <li>
-                {{ season.name }} - 
-                From: {{ season.fromDate | localizeddate('medium', 'none', app.request.locale) }} 
-                To : {{ season.toDate | localizeddate('medium', 'none', app.request.locale) }}
-                <ul>
-                    {% for membership in season.memberships %}
-                        <li>
-                            {{ membership.user.username }} - 
-                            From: 
-                            {% if membership.fromDate is not empty %}
-                                {{ membership.fromDate | localizeddate('medium', 'none', app.request.locale) }}
-                            {% else %}
-                                - 
-                            {% endif %}
-                            To : 
-                            {% if membership.toDate is not empty %}
-                                {{ membership.toDate | localizeddate('medium', 'none', app.request.locale) }}
-                            {% else %}
-                                - 
-                            {% endif %}
-                            <ul>
-                                {% for responsibility in membership.responsibilities %}
-                                    <li>
-                                        {{ responsibility.name }}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </li>
-
-        </ul>
-    </div>
+    {{ include('MbyCommunityBundle:Season:render.html.twig', {'season' : season}) }}
 {% endfor %}
 
 {% endblock %}

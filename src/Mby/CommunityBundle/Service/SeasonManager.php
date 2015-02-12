@@ -1,6 +1,6 @@
 <?php
 
-namespace Mby\CommunityBundle\Controller;
+namespace Mby\CommunityBundle\Service;
 
 use Doctrine\ORM\EntityManager;
 
@@ -43,8 +43,14 @@ class SeasonManager
         $seasonRepo = $this->em->getRepository('MbyCommunityBundle:Season');
         $lastSeason = $seasonRepo->findLastSeason($community);
 
-        if (! $season->getFromDate() > $lastSeason) {
+        if (! $lastSeason->getToDate() != null && $season->getFromDate()->getTimestamp() > $lastSeason->getToDate()->getTimestamp()) {
             throw new Exception("season start date must take place after the previous season start date");
+        }
+
+        if ($lastSeason->getToDate() == null) {
+            $lastSeasonToDate = clone $season->getFromDate();
+            $lastSeasonToDate->modify("-1 day");
+            $lastSeason->setToDate($lastSeasonToDate);
         }
 
         $season->setUser($user);

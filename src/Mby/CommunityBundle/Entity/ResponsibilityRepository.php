@@ -16,7 +16,13 @@ class ResponsibilityRepository extends EntityRepository
 	const APPLICANT_NAME = 'applicant';
     const MEMBER_NAME = 'member';
 
-	public function findByName(string $name)
+    /**
+     * @param string $name
+     * @return Responsibility
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+	public function findByName($name)
     {
         return $this->getEntityManager()
             ->createQuery(

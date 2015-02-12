@@ -51,6 +51,14 @@ class Responsibility extends AbstractBaseEntity
     }
 
     /**
+     * {@inheritdoc}
+     */
+    function __toString()
+    {
+        return $this->name;
+    }
+
+    /**
      * Get id
      *
      * @return integer 

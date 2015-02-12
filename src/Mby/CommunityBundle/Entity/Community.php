@@ -78,14 +78,14 @@ class Community extends AbstractBaseEntity
     private $public;
 
     /**
-     * @var \ArrayCollection
+     * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\Season", mappedBy="community")
      */
     private $seasons;
 
     /**
-     * @var \ArrayCollection
+     * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\CommunityPrivilege", mappedBy="community")
      */

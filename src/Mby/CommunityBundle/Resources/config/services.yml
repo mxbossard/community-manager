@@ -5,12 +5,18 @@ services:
         tags:
             - { name: twig.extension }
 
-    membership_manager:
-        class:     Mby\CommunityBundy\Service\MembershipManager
-        arguments: [ "@doctrine.orm.entity_manager" ]
     privilege_manager:
-        class:     Mby\CommunityBundy\Service\PrivilegeManager
+        class:     Mby\CommunityBundle\Service\PrivilegeManager
         arguments: [ "@doctrine.orm.entity_manager" ]
-    season_manager:
-        class:     Mby\CommunityBundy\Service\SeasonManager
+    responsibility_manager:
+        class:     Mby\CommunityBundle\Service\ResponsibilityManager
+        arguments: [ "@doctrine.orm.entity_manager" ]
+    community_manager:
+        class:     Mby\CommunityBundle\Service\CommunityManager
         arguments: [ "@doctrine.orm.entity_manager", "@privilege_manager" ]
+    season_manager:
+        class:     Mby\CommunityBundle\Service\SeasonManager
+        arguments: [ "@doctrine.orm.entity_manager", "@privilege_manager" ]
+    membership_manager:
+        class:     Mby\CommunityBundle\Service\MembershipManager
+        arguments: [ "@doctrine.orm.entity_manager" , "@privilege_manager", "@responsibility_manager"  ]

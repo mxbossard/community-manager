@@ -1,6 +1,6 @@
 <?php
 
-namespace Mby\CommunityBundle\Controller;
+namespace Mby\CommunityBundle\Service;
 
 use Doctrine\ORM\EntityManager;
 
@@ -13,71 +13,142 @@ use Mby\CommunityBundle\Entity\ResponsibilityRepository;
 class MembershipManager
 {
 
-    const SERVICE_NAME = 'membserhip_manager';
+    const SERVICE_NAME = 'membership_manager';
 
     /**
      * @var EntityManager 
      */
     protected $em;
 
-    public function __construct(EntityManager $entityManager)
+    /**
+     * @var PrivilegeManager
+     */
+    protected $privilegeManager;
+
+    /**
+     * @var ResponsibilityManager
+     */
+    protected $responsibilityManager;
+
+    public function __construct(EntityManager $entityManager, PrivilegeManager $privilegeManager, ResponsibilityManager $responsibilityManager)
     {
         $this->em = $entityManager;
+        $this->privilegeManager = $privilegeManager;
+        $this->responsibilityManager = $responsibilityManager;
     }
 
-    public function apply(User $user, Season $season, \Date $fromDate = null, \Date $toDate = null)
+    public function apply(User $user, Season $season, \DateTime $fromDate = null, \DateTime $toDate = null)
     {
-        $respRepo = $this->em->getRepository('MbyCommunityBundle:Responsibility');
-        $respApplicant = $respRepo->findByCode(ResponsibilityRepository::APPLICANT_CODE);
+        if (! $season->getCommunity()->getJoinable()) {
+            throw new \Exception("selected community is not joinable");
+        }
 
-        $this->create($user, $season, $respApplicant, $fromDate, $toDate);
+        $this->checkSeasonNotExpired($season);
+
+        $respRepo = $this->em->getRepository('MbyCommunityBundle:Responsibility');
+        $respApplicant = $respRepo->findByName(ResponsibilityRepository::APPLICANT_NAME);
+
+        if ($fromDate == null) {
+            $fromDate = new \DateTime();
+        }
+
+        $this->createMembership($user, $season, $respApplicant, $fromDate, $toDate);
     }
 
-    public function validApplication(Membership $membership)
+    public function validApplication(User $user, Membership $membership)
     {
+        $season = $membership->getSeason();
+        $community = $season->getCommunity();
+
+        $this->checkSeasonNotExpired($season);
+
+        if (! $this->privilegeManager->isModerator($user, $community)) {
+            throw new \Exception("user must be moderator to validate an application");
+        }
+
+        if (! $this->responsibilityManager->isApplicant($membership)) {
+            throw new \Exception("selected membership is not an application");
+        }
+
         $respRepo = $this->em->getRepository('MbyCommunityBundle:Responsibility');
-        $respApplicant = $respRepo->findByCode(ResponsibilityRepository::APPLICANT_CODE);
-        $respMember = $respRepo->findByCode(ResponsibilityRepository::MEMBER_CODE);
+        $respApplicant = $respRepo->findByName(ResponsibilityRepository::APPLICANT_NAME);
+        $respMember = $respRepo->findByName(ResponsibilityRepository::MEMBER_NAME);
 
         $membership->removeResponsibility($respApplicant);
         $membership->addResponsibility($respMember);
 
-        $this->update($membership);
+        $this->updateMembership($membership);
+    }
+
+    public function cancelApplication(User $user, Membership $membership)
+    {
+        $season = $membership->getSeason();
+        $community = $season->getCommunity();
+
+        $this->checkSeasonNotExpired($season);
+
+        if (! $this->privilegeManager->isModerator($user, $community)
+            && $membership->getUser()->getId() !== $user->getId()) {
+            throw new \Exception("user must be moderator or the applicant to cancel the application");
+        }
+
+        $respRepo = $this->em->getRepository('MbyCommunityBundle:Responsibility');
+        $respApplicant = $respRepo->findByName(ResponsibilityRepository::APPLICANT_NAME);
+
+        $membership->removeResponsibility($respApplicant);
+
+        $this->updateMembership($membership);
     }
 
 	/**
 	 * Register a user's membership to a season with responsibilities.
 	 *
      */
-    protected function create(User $user, Season $season, Responsibility $responsibility, \Date $fromDate = null, \Date $toDate = null)
+    protected function createMembership(User $user, Season $season, Responsibility $responsibility, \DateTime $fromDate = null, \DateTime $toDate = null)
     {
         $ms = new Membership();
         $ms->setUser($user);
         $ms->setSeason($season);
         $ms->addResponsibility($responsibility);
 
-        // if ($fromDate == null) {
-        //     $fromDate = $season->getFromDate();
-        // }
-
         $ms->setFromDate($fromDate);
         $ms->setToDate($toDate);
 
-        $msRepo = $this->em->getRepository('MbyCommunityBundle:Membership');
-        
         $this->em->persist($ms);
         $this->em->flush();
     }
 
     /**
-     * Register a user's membership to a community with responsibilities.
+     * Register a user's membership to a season with responsibilities.
      *
      */
-    protected function update(Membership $membership)
+    protected function updateMembership(Membership $membership)
     {
-        $this->em->update($membership);
+        if ($membership->getResponsibilities()->count() === 0) {
+            $this->em->remove($membership);
+        }
+
         $this->em->flush();
     }
 
+    /**
+     * @param Season $season
+     * @throws \Exception
+     */
+    public function checkSeasonNotExpired(Season $season)
+    {
+// Check for season expiration date. If toDate is null => season not expired.
+        $seasonToDate = $season->getToDate();
+        if ($seasonToDate == null) {
+            $seasonToDate = new \DateTime();
+        } else {
+            $seasonToDate = clone $seasonToDate;
+        }
+        $seasonToDate->modify("+1 day");
+
+        if ($seasonToDate->getTimestamp() < (new \DateTime())->getTimestamp()) {
+            throw new \Exception(sprintf("selected season expired since %s", $seasonToDate->format("Y-m-d H:i:s")));
+        }
+    }
 
 }

@@ -4,6 +4,7 @@ namespace Mby\CommunityBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * CommunityPrivilege
  *
@@ -14,7 +15,7 @@ class CommunityPrivilege
 {
 
     /**
-     * @var Mby\UserBundle\Entity\User
+     * @var \Mby\UserBundle\Entity\User
      * 
      * @ORM\Id 
      * @ORM\ManyToOne(targetEntity="Mby\UserBundle\Entity\User", inversedBy="privileges")
@@ -23,7 +24,7 @@ class CommunityPrivilege
     private $user;
 
     /**
-     * @var Mby\CommunityBundle\Entity\Community
+     * @var \Mby\CommunityBundle\Entity\Community
      * 
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Community", inversedBy="privileges")
@@ -32,7 +33,7 @@ class CommunityPrivilege
     private $community;
 
     /**
-     * @var Mby\CommunityBundle\Entity\Privilege
+     * @var \Mby\CommunityBundle\Entity\Privilege
      * 
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Privilege")

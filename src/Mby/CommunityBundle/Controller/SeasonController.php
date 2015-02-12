@@ -286,7 +286,7 @@ class SeasonController extends Controller
      *
      * @param mixed $id The entity id
      *
-     * @return Symfony\Component\Form\Form The form
+     * @return \Symfony\Component\Form\Form The form
      */
     private function createDeleteForm($id)
     {

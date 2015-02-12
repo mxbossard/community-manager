@@ -3,6 +3,7 @@
 namespace Mby\CommunityBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 use Mby\UserBundle\Entity\User;
 
@@ -25,8 +26,7 @@ class CommunityRepository extends EntityRepository
                         JOIN s.memberships m
                         JOIN m.responsibilities r
                     WHERE m.user = :userId
-                    ORDER BY c.name, s.fromDate
-                    '
+                    ORDER BY c.name, s.fromDate'
             )
             ->setParameter('userId', $user->getId());
         
@@ -38,16 +38,26 @@ class CommunityRepository extends EntityRepository
         
     }
 
-    public function findAllCommunities()
+    public function findOtherCommunities(User $user)
     {
-        $query = $this->getEntityManager()
-            ->createQuery(
-                '   SELECT c
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            '   SELECT c, s
                     FROM MbyCommunityBundle:Community c
                         JOIN c.seasons s
-                    ORDER BY c.name, s.fromDate
-                    '
-            );
+                    WHERE s.id NOT IN
+                        (   SELECT s2.id
+                            FROM MbyCommunityBundle:Season s2
+                                JOIN s2.community c2
+                                JOIN s2.memberships m2
+                                JOIN m2.responsibilities r2
+                            WHERE m2.user = :userId)
+                        AND ( s.toDate >= :today OR s.toDate IS NULL )
+                    ORDER BY c.name, s.fromDate'
+            )
+            ->setParameter('userId', $user->getId())
+            ->setParameter('today', (new \DateTime())->format("Y-m-d"));
         
         try {
             return $query->getResult();
@@ -57,5 +67,23 @@ class CommunityRepository extends EntityRepository
         
     }
 
+    public function findAllCommunities()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            '   SELECT c, s
+                    FROM MbyCommunityBundle:Community c
+                        JOIN c.seasons s
+                    ORDER BY c.name, s.fromDate'
+        );
+
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            throw $e;
+        }
+
+    }
 
 }

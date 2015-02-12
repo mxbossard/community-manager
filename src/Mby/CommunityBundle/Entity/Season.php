@@ -61,7 +61,7 @@ class Season extends AbstractBaseEntity
     private $note;
 
     /**
-     * @var Mby\CommunityBundle\Entity\Community
+     * @var \Mby\CommunityBundle\Entity\Community
      * 
      * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Community", inversedBy="seasons")
      * @ORM\JoinColumn(name="community_id", referencedColumnName="id", nullable=false)
