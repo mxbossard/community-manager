@@ -1,0 +1,20 @@
+
+{% set layout_activeTab = app.request.get('_route') %}
+
+{% if layout_navTabs is defined %}
+    <ul class="nav nav-tabs">
+        {% for _tab in layout_navTabs %}
+            {% set _route = _tab.route %}
+            {% set _icon = _tab.icon %}
+
+            <li 	role="presentation"
+                    {% if _route == layout_activeTab %} class="active" {% endif %}
+                    >
+                <a href="{{ path(_route) }}">
+                    <span class="glyphicon {{ _icon }}" aria-hidden="true"></span>
+                    {{ ('route.' ~ _route) | trans({}, 'MbyCommunityBundle') }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

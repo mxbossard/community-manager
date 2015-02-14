@@ -1,2 +1,12 @@
 
+{#
 {{ render(controller('AppBundle:Breadcrumb:render')) }}
+#}
+
+{% set layout_activeBar = app.request.get('_route') %}
+
+{% if layout_navBar is defined %}
+    <nav>
+
+    </nav>
+{% endif %}

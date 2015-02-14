@@ -15,17 +15,21 @@ class LoadPrivilegeData extends AbstractFixture implements OrderedFixtureInterfa
      */
     public function load(ObjectManager $manager)
     {
+
+        $owner = new Privilege();
+        $owner->setCode('owner');
+        $owner->setRank(1);
+        $manager->persist($owner);
+
         $admin = new Privilege();
         $admin->setCode('admin');
+        $admin->setRank(2);
         $manager->persist($admin);
 
         $moderator = new Privilege();
         $moderator->setCode('moderator');
+        $moderator->setRank(3);
         $manager->persist($moderator);
-
-        $owner = new Privilege();
-        $owner->setCode('owner');
-        $manager->persist($owner);
 
         $manager->flush();
 

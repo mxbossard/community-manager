@@ -1,0 +1,57 @@
+{% extends 'MbyCommunityBundle::itemInPanel.html.twig' %}
+
+{% set OWNER_CODE = constant('\\Mby\\CommunityBundle\\Entity\\PrivilegeRepository::OWNER_CODE') %}
+{% set ADMIN_CODE = constant('\\Mby\\CommunityBundle\\Entity\\PrivilegeRepository::ADMIN_CODE') %}
+{% set MODERATOR_CODE = constant('\\Mby\\CommunityBundle\\Entity\\PrivilegeRepository::MODERATOR_CODE') %}
+
+{% block panel %}
+    {% set obj_class = 'obj_community' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}
+    <span class="glyphicon glyphicon-tent"></span> {{ community.name }}
+{% endblock %}
+
+{% block body %}
+    <p>
+        {{ community.description }}
+    </p>
+
+    {% if community.privileges is not empty %}
+
+        <h4>
+            {{ 'privileges users' | trans({}, 'MbyCommunityBundle') | capitalize }}
+        </h4>
+
+        <ul class="list-inline">
+            {% for privilege in community.privileges %}
+                <li>{{ include('MbyCommunityBundle:User:render-thin.html.twig', {'user' : privilege.user, 'user_classes' : privilege.privilege.code})  }}</li>
+            {% endfor %}
+
+        </ul>
+
+    {% endif %}
+
+    {% if community.seasons is not empty %}
+
+        <h4>
+            {{ 'seasons' | trans({}, 'MbyCommunityBundle') | capitalize }}
+        </h4>
+
+        <ul class="list-inline">
+            {% for season in community.seasons %}
+                <li>{{ include('MbyCommunityBundle:Season:render-thin.html.twig', {'season' : season})  }}</li>
+            {% endfor %}
+
+        </ul>
+
+    {% endif %}
+
+{% endblock %}
+
+{% block footer %}
+    {{ 'created on' | trans({}, 'MbyCommunityBundle') | capitalize }}: {{ community.created | localizeddate('medium', 'none', app.request.locale) }}
+    -
+    {{ 'last updated on' | trans({}, 'MbyCommunityBundle') | capitalize }}: {{ community.updated | localizeddate('medium', 'none', app.request.locale) }}
+{% endblock %}

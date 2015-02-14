@@ -1,0 +1,11 @@
+{% extends 'MbyCommunityBundle:Lobby:lobbyLayout.html.twig' %}
+
+{% block page %}
+
+    <h1>{{ 'administraton' | trans({}, 'MbyCommunityBundle') | capitalize }}</h1>
+
+    {% for community in myCommunities %}
+        {{ include('MbyCommunityBundle:Community:render.html.twig', {'community' : community, 'panel_classes' : 'panel-danger'}) }}
+    {% endfor %}
+
+{% endblock %}

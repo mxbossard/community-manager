@@ -1,0 +1,11 @@
+{% extends 'MbyCommunityBundle:Lobby:lobbyLayout.html.twig' %}
+
+{% block page %}
+
+    <h1>{{ 'my memberships' | trans({}, 'MbyCommunityBundle') | capitalize }}</h1>
+
+    {% for season in mySeasons %}
+        {{ include('MbyCommunityBundle:Season:render.html.twig', {'season' : season, 'panel_classes' : 'panel-success'}) }}
+    {% endfor %}
+
+{% endblock %}

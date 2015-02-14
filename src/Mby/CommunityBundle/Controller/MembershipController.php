@@ -44,7 +44,7 @@ class MembershipController extends Controller
 
         $msManager->apply($user, $season, null, null);
 
-        return $this->redirectToRoute("membership_mySeasons");
+        return $this->redirectToRoute("lobby_myMemberships");
     }
 
     /**
@@ -68,7 +68,7 @@ class MembershipController extends Controller
         $msManager = $this->get(MembershipManager::SERVICE_NAME);
         $msManager->validApplication($user, $membership);
 
-        return $this->redirectToRoute("membership_mySeasons");
+        return $this->redirectToRoute("lobby_myMemberships");
     }
 
     /**
@@ -92,7 +92,7 @@ class MembershipController extends Controller
         $msManager = $this->get(MembershipManager::SERVICE_NAME);
         $msManager->cancelApplication($user, $membership);
 
-        return $this->redirectToRoute("membership_mySeasons");
+        return $this->redirectToRoute("lobby_myMemberships");
     }
 
     /**
@@ -129,7 +129,7 @@ class MembershipController extends Controller
 
         $communities = $this->getDoctrine()
         ->getRepository('MbyCommunityBundle:Community')
-        ->findOtherCommunities($user);
+        ->findAllCommunities($user);
 
         return $this->render('MbyCommunityBundle:Membership:myCommunities.html.twig', array(
             'communities' => $communities

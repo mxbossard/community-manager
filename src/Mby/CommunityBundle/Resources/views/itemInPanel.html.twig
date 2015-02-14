@@ -1,0 +1,33 @@
+{% block panel %}
+
+    <div class="{{ obj_class }} panel {{ panel_classes | default('') }}">
+
+        <div class="panel-heading">
+
+            {% block heading %}
+
+                <h2 class="panel-title">
+
+                    {% block title %}{% endblock %}
+
+                </h2>
+
+            {% endblock %}
+
+        </div>
+
+        <div class="panel-body">
+            <div>
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+
+        <div class="panel-footer">
+
+            {% block footer %}{% endblock %}
+
+        </div>
+
+    </div>
+
+{% endblock %}

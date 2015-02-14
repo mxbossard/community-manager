@@ -15,6 +15,53 @@ use Mby\CommunityBundle\Entity\Community;
  */
 class SeasonRepository extends EntityRepository
 {
+    public function findUserActiveSeasons(User $user)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                '   SELECT s, c, m, r
+                    FROM MbyCommunityBundle:Season s
+                        JOIN s.community c
+                        JOIN s.memberships m
+                        JOIN m.responsibilities r
+                    WHERE m.user = :userId
+                      AND ( s.toDate IS NULL OR s.toDate >= :today )
+                    ORDER BY s.fromDate DESC, r.id ASC, c.name ASC'
+            )
+            ->setParameter('userId', $user->getId())
+            ->setParameter('today', (new \DateTime())->format("Y-m-d"));
+
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            throw $e;
+        }
+
+    }
+
+    public function findUserInactiveSeasons(User $user)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                '   SELECT s, c, m, r
+                    FROM MbyCommunityBundle:Season s
+                        JOIN s.community c
+                        JOIN s.memberships m
+                        JOIN m.responsibilities r
+                    WHERE m.user = :userId
+                      AND  s.toDate < :today
+                    ORDER BY s.fromDate DESC, r.id ASC, c.name ASC'
+            )
+            ->setParameter('userId', $user->getId())
+            ->setParameter('today', (new \DateTime())->format("Y-m-d"));
+
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            throw $e;
+        }
+
+    }
 
     public function findAllUserSeasons(User $user)
     {

@@ -26,6 +26,7 @@ class LoadSeasonData extends AbstractFixture implements OrderedFixtureInterface
         $seas2 = new Season();
         $seas2->setName('2014-2015');
         $seas2->setFromDate(new \DateTime('2014-09-01'));
+        $seas2->setActive(true);
         $seas2->setCommunity($this->getReference('community-com1'));
         $manager->persist($seas2);
 
@@ -39,12 +40,14 @@ class LoadSeasonData extends AbstractFixture implements OrderedFixtureInterface
         $seas4 = new Season();
         $seas4->setName('2014-2015');
         $seas4->setFromDate(new \DateTime('2014-09-01'));
+        $seas4->setActive(true);
         $seas4->setCommunity($this->getReference('community-com2'));
         $manager->persist($seas4);
 
         $seas5 = new Season();
         $seas5->setName('2014-2015');
         $seas5->setFromDate(new \DateTime('2014-09-01'));
+        $seas5->setActive(true);
         $seas5->setCommunity($this->getReference('community-com3'));
         $manager->persist($seas5);
 

@@ -1,0 +1,27 @@
+route:
+    lobby_myMemberships: Mes participations
+    lobby_oldMemberships: Historique
+    lobby_searchCommunities: Recherche
+    lobby_moderation: Modération
+    lobby_administration: Adminitration
+    lobby_ownership: Mes communautés
+
+my privileges: mes privilèges
+privileges: privilèges
+privileges users: utilisateurs privilégiés
+owners: propriétaires
+administrators: administrateurs
+moderators: modérateurs
+seasons: saisons
+search for communities: rechercher des communautés
+my memberships: mes participations
+my old memberships: mes anciennes participations
+ownership: propriété
+moderation: modération
+cancel my application: annuler ma candidature
+apply: devenir membre
+from: depuis le
+to: jusqu'au
+my responsibilities: mes responsabilités
+created on: créé(e) le
+last updated on: dernière mise à jour le

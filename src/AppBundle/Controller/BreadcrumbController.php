@@ -23,8 +23,13 @@ class BreadcrumbController extends Controller
 
 		//$items[] = $currentUri;
 
+        $tabs = array();
+        $tabs[] = 'lobby_myMemberships';
+        $tabs[] = 'lobby_oldMemberships';
+
         return $this->render('AppBundle:Breadcrumb:render.html.twig', array(
-            'items' => $items
+            'items' => $items,
+            'tabs' => $tabs
         ));  
     }
 

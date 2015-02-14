@@ -20,9 +20,10 @@ class NavigationController extends Controller
         $links[] = 'membership_myCommunities';
         $links[] = 'membership_mySeasons';
         $links[] = 'seasons';
+        $links[] = 'lobby_myMemberships';
 
         return $this->render('AppBundle:Navigation:listNavigableLinks.html.twig', array(
-            'links' => $links 
+            'links' => $links
         ));
   
     }

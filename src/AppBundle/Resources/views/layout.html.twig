@@ -41,7 +41,13 @@
                         {{ include('AppBundle::navBar.html.twig') }}
                     {% endblock %}
                 </div>
-                
+
+                <div id="navTabs">
+                    {% block navTabs %}
+                        {{ include('AppBundle::navTabs.html.twig') }}
+                    {% endblock %}
+                </div>
+
                 {% block content %}
                     {% block fos_user_content %}{% endblock %}
                     {% block page %}{% endblock %}

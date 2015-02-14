@@ -1,17 +1,27 @@
-<div class="season">
-    <h2>{{ season.community.name }} - {{ season.name }}</h2>
-    <p>
-        From: {{ season.fromDate | localizeddate('medium', 'none', app.request.locale) }}
-        To : {{ season.toDate | localizeddate('medium', 'none', app.request.locale) }}
-    </p>
+{% extends 'MbyCommunityBundle::itemInPanel.html.twig' %}
+
+{% block panel %}
+    {% set obj_class = 'obj_season' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}
+    <span class="glyphicon glyphicon-star"></span>
+    {{ season.community.name }} - {{ season.name }}
+
+{% endblock %}
+
+{% block body %}
+
+    {{ season.community.description }}
 
     {% if season.memberships is not empty %}
-        {# the user is member of the community #}
+        {# the user is member of the season #}
 
         {% set membership = season.memberships.first %}
         {% set responsibilities = membership.responsibilities %}
 
-        <h3>My responsibilities</h3>
+        <h4>{{ 'my responsibilities' | trans({}, 'MbyCommunityBundle') | capitalize }}</h4>
         <ul>
             {% for responsibility in responsibilities %}
                 <li>{{ responsibility.name }}</li>
@@ -29,16 +39,22 @@
         <form action="{{ path("membership_cancelApplication") }}" method="post">
             <input type="hidden" name="user_id" value="{{ membership.user.id }}"/>
             <input type="hidden" name="season_id" value="{{ season.id }}"/>
-            <button class="btn btn-danger">Cancel my application</button>
+            <button class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove"></span>
+                {{ 'cancel my application' | trans({}, 'MbyCommunityBundle') | capitalize }}
+            </button>
         </form>
 
     {% elseif 'member' in responsibilities %}
-            Member !
+        Member !
 
     {% else %}
         <form action="{{ path("membership_apply") }}" method="post">
             <input type="hidden" name="season_id" value="{{ season.id }}"/>
-            <button class="btn btn-primary">Apply</button>
+            <button class="btn btn-success">
+                <span class="glyphicon glyphicon-ok"></span>
+                {{ 'apply' | trans({}, 'MbyCommunityBundle') | capitalize }}
+            </button>
         </form>
 
     {% endif %}
@@ -47,6 +63,13 @@
         President !
     {% endif %}
 
-    <h3>My privileges</h3>
+{% endblock %}
 
-</div>
+{% block footer %}
+
+    {{ 'from' | trans({}, 'MbyCommunityBundle') | capitalize }}: {{ season.fromDate | localizeddate('medium', 'none', app.request.locale) }}
+    -
+    {{ 'to' | trans({}, 'MbyCommunityBundle') | capitalize }}: {{ season.toDate | localizeddate('medium', 'none', app.request.locale) }}
+
+{% endblock %}
+

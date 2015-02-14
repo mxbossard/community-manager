@@ -248,27 +248,4 @@ class Season extends AbstractBaseEntity
     {
         return $this->memberships;
     }
-
-    /**
-     * Set active
-     *
-     * @param boolean $active
-     * @return Season
-     */
-    public function setActive($active)
-    {
-        $this->active = $active;
-
-        return $this;
-    }
-
-    /**
-     * Get active
-     *
-     * @return boolean 
-     */
-    public function getActive()
-    {
-        return $this->active;
-    }
 }

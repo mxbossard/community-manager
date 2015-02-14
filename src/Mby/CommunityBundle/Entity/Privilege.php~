@@ -119,27 +119,4 @@ class Privilege
         return $this->note;
     }
 
-
-    /**
-     * Set rank
-     *
-     * @param integer $rank
-     * @return Privilege
-     */
-    public function setRank($rank)
-    {
-        $this->rank = $rank;
-
-        return $this;
-    }
-
-    /**
-     * Get rank
-     *
-     * @return integer 
-     */
-    public function getRank()
-    {
-        return $this->rank;
-    }
 }
