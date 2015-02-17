@@ -15,6 +15,37 @@ use Mby\CommunityBundle\Entity\Community;
  */
 class SeasonRepository extends EntityRepository
 {
+
+    public function findUserApplicableSeasons(User $user)
+    {
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(
+            '   SELECT s, c
+                    FROM MbyCommunityBundle:Season s
+                        JOIN s.community c
+                    WHERE ( s.toDate IS NULL OR :today <= s.toDate )
+                        AND s.fromDate <= :today
+                        AND c.joinable = 1 AND s.active = 1
+                        AND s.id NOT IN (
+                            SELECT s2.id
+                            FROM MbyCommunityBundle:Season s2
+                                JOIN s2.memberships m2
+                            WHERE m2.user = :userId
+                        )
+                    ORDER BY c.name ASC, s.name ASC'
+        )
+            ->setParameter('today', (new \DateTime())->format("Y-m-d"))
+            ->setParameter('userId', $user->getId())
+            ->setMaxResults(100);
+
+        $result = $query->getResult();
+
+        return $result;
+
+    }
+
+    /** @deprecated */
     public function findUserActiveSeasons(User $user)
     {
         $query = $this->getEntityManager()
@@ -26,7 +57,7 @@ class SeasonRepository extends EntityRepository
                         JOIN m.responsibilities r
                     WHERE m.user = :userId
                       AND ( s.toDate IS NULL OR s.toDate >= :today )
-                    ORDER BY s.fromDate DESC, r.id ASC, c.name ASC'
+                    ORDER BY r.id ASC, c.name ASC, s.name ASC'
             )
             ->setParameter('userId', $user->getId())
             ->setParameter('today', (new \DateTime())->format("Y-m-d"));
@@ -39,6 +70,7 @@ class SeasonRepository extends EntityRepository
 
     }
 
+    /** @deprecated */
     public function findUserInactiveSeasons(User $user)
     {
         $query = $this->getEntityManager()
@@ -50,7 +82,7 @@ class SeasonRepository extends EntityRepository
                         JOIN m.responsibilities r
                     WHERE m.user = :userId
                       AND  s.toDate < :today
-                    ORDER BY s.fromDate DESC, r.id ASC, c.name ASC'
+                    ORDER BY r.id ASC, s.fromDate DESC, c.name ASC, s.name ASC'
             )
             ->setParameter('userId', $user->getId())
             ->setParameter('today', (new \DateTime())->format("Y-m-d"));
@@ -63,6 +95,7 @@ class SeasonRepository extends EntityRepository
 
     }
 
+    /** @deprecated */
     public function findAllUserSeasons(User $user)
     {
         $query = $this->getEntityManager()

@@ -14,7 +14,53 @@ use Mby\UserBundle\Entity\User;
  */
 class MembershipRepository extends EntityRepository
 {
-	public function findAllUserMemberships(User $user)
+    public function findUserActiveMemberships(User $user)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+                '   SELECT m, s, c, r
+                    FROM MbyCommunityBundle:Membership m
+                        JOIN m.season s
+                        JOIN s.community c
+                        LEFT JOIN m.responsibilities r
+                    WHERE m.user = :userId
+                        AND s.fromDate <= :today AND ( s.toDate IS NULL OR :today <= s.toDate )
+                        AND ( m.fromDate IS NULL OR m.fromDate <= :today) AND ( m.toDate IS NULL OR :today <= m.toDate )
+                    ORDER BY r.id ASC, c.name ASC'
+            )
+            ->setParameter('userId', $user->getId())
+            ->setParameter('today', (new \DateTime())->format("Y-m-d"));
+
+        $result = $query->getResult();
+        $em->close();
+
+        return $result;
+    }
+
+    public function findUserOldMemberships(User $user)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+            '   SELECT m, s, c, r
+                    FROM MbyCommunityBundle:Membership m
+                        JOIN m.season s
+                        JOIN s.community c
+                        LEFT JOIN m.responsibilities r
+                    WHERE m.user = :userId
+                        AND ( s.toDate IS NOT NULL AND s.toDate < :today )
+                        OR ( m.toDate IS NOT NULL AND m.toDate < :today )
+                    ORDER BY c.name ASC, s.fromDate DESC'
+        )
+            ->setParameter('userId', $user->getId())
+            ->setParameter('today', (new \DateTime())->format("Y-m-d"));
+
+        $result = $query->getResult();
+        $em->close();
+
+        return $result;
+    }
+
+    public function findAllUserMemberships(User $user)
     {
         $query = $this->getEntityManager()
             ->createQuery(

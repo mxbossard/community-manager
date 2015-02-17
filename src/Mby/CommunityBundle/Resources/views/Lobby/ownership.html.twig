@@ -28,8 +28,8 @@
         </div>
     </div>
 
-    {% for community in myCommunities %}
-        {{ include('MbyCommunityBundle:Community:render.html.twig', {'community' : community, 'panel_classes' : 'panel-success'}) }}
+    {% for privilege in privileges %}
+        {{ include('MbyCommunityBundle:CommunityPrivilege:communityPrivilege-owner.html.twig', {'privilege' : privilege, 'panel_classes' : 'panel-success'}) }}
     {% endfor %}
 
 {% endblock %}

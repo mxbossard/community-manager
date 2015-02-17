@@ -1,7 +1,7 @@
 <span class="obj_season obj_season-thin {{ season_classes | default('') }} {% if season.active %}active{% endif %}">
     <a href="">
         <span class="badge">
-            <span class="glyphicon glyphicon-star"></span>
+            {{ include('MbyCommunityBundle:Season:icon.html.twig') }}
             {{ season.name }}
 
         </span>

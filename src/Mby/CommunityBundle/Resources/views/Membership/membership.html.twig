@@ -1,0 +1,68 @@
+{% extends 'MbyCommunityBundle:Season:season.html.twig' %}
+
+{% set user = app.user %}
+{% set target = membership.user %}
+{% set season = membership.season %}
+{% set responsibilities = membership.responsibilities %}
+{% set community = season.community %}
+
+{% block title %}
+    <span class="glyphicon glyphicon-bookmark"></span>
+    {{ community.name }} - {{ season.name }}
+
+{% endblock %}
+
+{% block infos %}
+
+    {% if responsibilities is not empty %}
+
+        <h4>{{ 'my responsibilities' | trans({}, 'MbyCommunityBundle') | capitalize }}</h4>
+        <ul>
+            {% for responsibility in responsibilities %}
+                <li>{{ responsibility.name }}</li>
+            {% endfor %}
+
+        </ul>
+
+    {% else %}
+
+    {% endif %}
+
+    {% if 'president' in responsibilities %}
+        President !
+    {% endif %}
+
+{% endblock %}
+
+{% block actions %}
+
+    {% if community.email is defined %}
+        {{ include('MbyCommunityBundle:Action:email.html.twig', {'email' : community.email})  }}
+    {% endif %}
+
+    {% if 'applicant' in responsibilities %}
+        <form action="{{ path("membership_cancelApplication") }}" method="post">
+            <input type="hidden" name="user_id" value="{{ membership.user.id }}"/>
+            <input type="hidden" name="season_id" value="{{ season.id }}"/>
+            <button class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove"></span>
+                {{ 'cancel my application' | trans({}, 'MbyCommunityBundle') | capitalize }}
+            </button>
+        </form>
+
+    {% elseif 'member' not in responsibilities and season.active %}
+        {{ include('MbyCommunityBundle:Action:apply.html.twig', {'seasonId' : season.id})  }}
+    {% endif %}
+
+{% endblock %}
+
+{% block footer %}
+    {{ parent() }}
+
+    {% if membership.fromDate %}
+        -
+        {{ 'joined on' | trans({}, 'MbyCommunityBundle') | capitalize }}: {{ membership.fromDate | localizeddate('medium', 'none', app.request.locale) }}
+    {% endif %}
+
+{% endblock %}
+

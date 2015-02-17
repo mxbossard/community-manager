@@ -46,3 +46,27 @@ assetic:
 
 #swiftmailer:
 #    delivery_address: me@example.com
+
+bazinga_faker:
+    orm: doctrine
+    seed: 1234
+    locale: fr_FR
+    entities:
+        Mby\UserBundle\Entity\User:
+            number: 100
+            custom_formatters:
+                username: { method: userName, unique: true }
+                email: { method: email }
+        Mby\CommunityBundle\Entity\Community:
+            number: 100
+            custom_formatters:
+                name: { method: company }
+                description: { method: text, parameters:{ maxNbChars: 1000 } }
+                email: { method: email, unique: true }
+        Mby\CommunityBundle\Entity\Season:
+            number: 100
+            custom_formatters:
+                name: { method: lexify, parameters:{ string: 'Saison 2014-2015' } }
+                fromDate: { method: dateTimeBetween, parameters:{ startDate: '2014-09-01', endDate: '2014-12-01' } }
+                toDate: { method: null, optional: true }
+                note: { method: text, parameters:{ maxNbChars: 500 } }

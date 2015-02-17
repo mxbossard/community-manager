@@ -1,0 +1,12 @@
+
+{% if params is defined %}
+    <a href="{{ path(route, params) }}">
+{% else %}
+    <a href="{{ path(route) }}">
+{% endif %}
+
+    <span class="btn btn-warning">
+        <span class="glyphicon glyphicon-check"></span>
+        {{ 'moderate' | trans({}, 'MbyCommunityBundle') | capitalize }}
+    </span>
+</a>

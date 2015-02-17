@@ -1,0 +1,12 @@
+{% extends 'MbyCommunityBundle:CommunityPrivilege:communityPrivilege.html.twig' %}
+
+{% block title %}
+    {{ include('MbyCommunityBundle:CommunityPrivilege:icon.html.twig') }}
+    {{ community.name }}
+{% endblock %}
+
+{% block actions %}
+    {{ parent() }}
+
+    {{ include('MbyCommunityBundle:Action:administrate.html.twig', {route : 'communityAdmin', params : {id : community.id}})  }}
+{% endblock %}

@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="mby_seasons")
  * @ORM\Entity(repositoryClass="Mby\CommunityBundle\Entity\SeasonRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Season extends AbstractBaseEntity
 {
@@ -79,6 +80,7 @@ class Season extends AbstractBaseEntity
      * @var \ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Mby\CommunityBundle\Entity\Membership", mappedBy="season")
+     * , fetch="EXTRA_LAZY"
      */
     private $memberships;
 
@@ -89,7 +91,6 @@ class Season extends AbstractBaseEntity
         $this->active = false;
         $this->memberships = new ArrayCollection();
     }
-
 
     /**
      * Get id
@@ -270,5 +271,21 @@ class Season extends AbstractBaseEntity
     public function getActive()
     {
         return $this->active;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersistCallback()
+    {
+        // Add your code here
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdateCallback()
+    {
+        // Add your code here
     }
 }

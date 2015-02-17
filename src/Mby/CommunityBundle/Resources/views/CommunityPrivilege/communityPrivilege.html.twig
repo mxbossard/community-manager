@@ -1,0 +1,24 @@
+{% extends 'MbyCommunityBundle:Community:community.html.twig' %}
+
+{% set user = app.user %}
+{% set target = privilege.user %}
+{% set community = privilege.community %}
+
+{% set privileges = community.privileges %}
+
+{% block title %}
+    {{ include('MbyCommunityBundle:CommunityPrivilege:icon.html.twig') }}
+    {{ community.name }}
+{% endblock %}
+
+{% block body %}
+
+    {{ parent() }}
+
+{% endblock %}
+
+{% block footer %}
+
+    {{ parent() }}
+
+{% endblock %}

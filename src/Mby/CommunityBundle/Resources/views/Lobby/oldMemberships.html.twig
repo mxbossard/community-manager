@@ -4,8 +4,8 @@
 
     <h1>{{ 'my old memberships' | trans({}, 'MbyCommunityBundle') | capitalize }}</h1>
 
-    {% for season in mySeasons %}
-        {{ include('MbyCommunityBundle:Season:render.html.twig', {'season' : season, 'panel_classes' : 'disabled panel-warning'}) }}
+    {% for membership in memberships %}
+        {{ include('MbyCommunityBundle:Membership:membership.html.twig', {'membership' : membership, 'panel_classes' : 'disabled panel-warning'}) }}
     {% endfor %}
 
 {% endblock %}

@@ -1,3 +1,4 @@
+
 {% block panel %}
 
     <div class="{{ obj_class }} panel {{ panel_classes | default('') }}">
@@ -18,7 +19,27 @@
 
         <div class="panel-body">
             <div>
-                {% block body %}{% endblock %}
+                {% block body %}
+                    <div class="panel-top">
+                        {% block top %}{% endblock %}
+                    </div>
+
+                    <div class="panel-content">
+                    {% block content %}{% endblock %}
+                    </div>
+
+                    <div class="panel-infos">
+                        {% block infos %}{% endblock %}
+                    </div>
+
+                    <div class="panel-actions">
+                        {% block actions %}{% endblock %}
+                    </div>
+
+                    <div class="panel-bottom">
+                        {% block bottom %}{% endblock %}
+                    </div>
+                {% endblock %}
             </div>
         </div>
 

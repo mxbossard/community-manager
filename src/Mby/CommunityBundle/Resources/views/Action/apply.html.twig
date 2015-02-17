@@ -1,0 +1,7 @@
+<form class="form-inline" action="{{ path("membership_apply") }}" method="post">
+    <input type="hidden" name="season_id" value="{{ seasonId }}"/>
+    <button class="btn btn-success">
+        {{ include('MbyCommunityBundle:Action:apply-icon.html.twig') }}
+        {{ 'apply' | trans({}, 'MbyCommunityBundle') | capitalize }}
+    </button>
+</form>

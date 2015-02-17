@@ -19,16 +19,16 @@ abstract class AbstractBaseEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created", type="datetime")
+     * @ORM\Column(name="createdAt", type="datetime")
      */
-    private $created;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updated", type="datetime", nullable=true)
+     * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
      */
-    private $updated;
+    private $updatedAt;
 
     public function __construct()
     {
@@ -40,7 +40,7 @@ abstract class AbstractBaseEntity
      */
     public function prePersistCallback()
     {
-        $this->created = new \DateTime();
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -48,7 +48,7 @@ abstract class AbstractBaseEntity
      */
     public function preUpdateCallback()
     {
-        $this->updated = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     /**
@@ -56,9 +56,9 @@ abstract class AbstractBaseEntity
      *
      * @return \DateTime 
      */
-    public function getCreated()
+    public function getCreatedAt()
     {
-        return $this->created;
+        return $this->createdAt;
     }
 
     /**
@@ -66,9 +66,9 @@ abstract class AbstractBaseEntity
      *
      * @return \DateTime 
      */
-    public function getUpdated()
+    public function getUpdatedAt()
     {
-        return $this->updated;
+        return $this->updatedAt;
     }
 
 }

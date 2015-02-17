@@ -4,8 +4,8 @@
 
     <h1>{{ 'administraton' | trans({}, 'MbyCommunityBundle') | capitalize }}</h1>
 
-    {% for community in myCommunities %}
-        {{ include('MbyCommunityBundle:Community:render.html.twig', {'community' : community, 'panel_classes' : 'panel-danger'}) }}
+    {% for privilege in privileges %}
+        {{ include('MbyCommunityBundle:CommunityPrivilege:communityPrivilege-admin.html.twig', {'privilege' : privilege, 'panel_classes' : 'panel-danger'}) }}
     {% endfor %}
 
 {% endblock %}

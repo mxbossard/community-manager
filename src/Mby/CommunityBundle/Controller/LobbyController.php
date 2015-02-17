@@ -37,12 +37,12 @@ class LobbyController extends Controller
     {
         $user= $this->get('security.context')->getToken()->getUser();
 
-        $mySeasons = $this->getDoctrine()
-            ->getRepository('MbyCommunityBundle:Season')
-            ->findUserActiveSeasons($user);
+        $myMemberships = $this->getDoctrine()
+            ->getRepository('MbyCommunityBundle:Membership')
+            ->findUserActiveMemberships($user);
 
         return $this->render('MbyCommunityBundle:Lobby:myMemberships.html.twig', array(
-            'mySeasons' => $mySeasons
+            'memberships' => $myMemberships
         ));
     }
 
@@ -57,12 +57,12 @@ class LobbyController extends Controller
     {
         $user= $this->get('security.context')->getToken()->getUser();
 
-        $oldSeasons = $this->getDoctrine()
-            ->getRepository('MbyCommunityBundle:Season')
-            ->findUserInactiveSeasons($user);
+        $oldMemberships = $this->getDoctrine()
+            ->getRepository('MbyCommunityBundle:Membership')
+            ->findUserOldMemberships($user);
 
         return $this->render('MbyCommunityBundle:Lobby:oldMemberships.html.twig', array(
-            'mySeasons' => $oldSeasons
+            'memberships' => $oldMemberships
         ));
     }
 
@@ -77,12 +77,12 @@ class LobbyController extends Controller
     {
         $user= $this->get('security.context')->getToken()->getUser();
 
-        $communities = $this->getDoctrine()
-            ->getRepository('MbyCommunityBundle:Community')
-            ->findJoinableCommunities();
+        $seasons = $this->getDoctrine()
+            ->getRepository('MbyCommunityBundle:Season')
+            ->findUserApplicableSeasons($user);
 
         return $this->render('MbyCommunityBundle:Lobby:searchCommunities.html.twig', array(
-            'communities' => $communities
+            'seasons' => $seasons
         ));
     }
 
@@ -97,12 +97,12 @@ class LobbyController extends Controller
     {
         $user= $this->get('security.context')->getToken()->getUser();
 
-        $myCommunities = $this->getDoctrine()
-            ->getRepository('MbyCommunityBundle:Community')
-            ->findUserOwnedCommunities($user);
+        $privileges = $this->getDoctrine()
+            ->getRepository('MbyCommunityBundle:CommunityPrivilege')
+            ->findUserModeratorPrivileges($user);
 
         return $this->render('MbyCommunityBundle:Lobby:moderation.html.twig', array(
-            'myCommunities' => $myCommunities
+            'privileges' => $privileges
         ));
     }
 
@@ -117,12 +117,12 @@ class LobbyController extends Controller
     {
         $user= $this->get('security.context')->getToken()->getUser();
 
-        $myCommunities = $this->getDoctrine()
-            ->getRepository('MbyCommunityBundle:Community')
-            ->findUserOwnedCommunities($user);
+        $privileges = $this->getDoctrine()
+            ->getRepository('MbyCommunityBundle:CommunityPrivilege')
+            ->findUserAdminPrivileges($user);
 
         return $this->render('MbyCommunityBundle:Lobby:administration.html.twig', array(
-            'myCommunities' => $myCommunities
+            'privileges' => $privileges
         ));
     }
 
@@ -137,12 +137,12 @@ class LobbyController extends Controller
     {
         $user= $this->get('security.context')->getToken()->getUser();
 
-        $myCommunities = $this->getDoctrine()
-            ->getRepository('MbyCommunityBundle:Community')
-            ->findUserOwnedCommunities($user);
+        $privileges = $this->getDoctrine()
+            ->getRepository('MbyCommunityBundle:CommunityPrivilege')
+            ->findUserOwnerPrivileges($user);
 
         return $this->render('MbyCommunityBundle:Lobby:ownership.html.twig', array(
-            'myCommunities' => $myCommunities
+            'privileges' => $privileges
         ));
     }
 

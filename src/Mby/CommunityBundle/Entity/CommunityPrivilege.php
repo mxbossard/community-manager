@@ -3,13 +3,14 @@
 namespace Mby\CommunityBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Mby\UserBundle\Entity\User;
 
 
 /**
  * CommunityPrivilege
  *
  * @ORM\Table(name="mby_communities_privileges")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Mby\CommunityBundle\Entity\CommunityPrivilegeRepository")
  */
 class CommunityPrivilege
 {
@@ -47,6 +48,15 @@ class CommunityPrivilege
      * @ORM\Column(name="note", type="text", nullable=true)
      */
     private $note;
+
+    public static function build(User $user, Community $community, Privilege $privilege) {
+        $communityPrivilege = new CommunityPrivilege();
+        $communityPrivilege->setCommunity($community);
+        $communityPrivilege->setUser($user);
+        $communityPrivilege->setPrivilege($privilege);
+
+        return $communityPrivilege;
+    }
 
     /**
      * Set note

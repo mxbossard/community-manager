@@ -16,13 +16,14 @@ use Mby\UserBundle\Entity\User;
 class CommunityRepository extends EntityRepository
 {
 
+    /** @deprecated */
     public function findUserOwnedCommunities(User $user)
     {
         $query = $this->getEntityManager()
             ->createQuery(
                 "   SELECT c, s, cp, p, u
                     FROM MbyCommunityBundle:Community c
-                        JOIN c.seasons s
+                        LEFT JOIN c.seasons s
                         JOIN c.privileges cp
                         JOIN cp.privilege p
                         JOIN cp.user u
@@ -41,7 +42,59 @@ class CommunityRepository extends EntityRepository
         }
 
     }
+    /** @deprecated */
+    public function findUserAdministratorCommunities(User $user)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                "   SELECT c, s, cp, p, u
+                    FROM MbyCommunityBundle:Community c
+                        LEFT JOIN c.seasons s
+                        JOIN c.privileges cp
+                        JOIN cp.privilege p
+                        JOIN cp.user u
+                        JOIN c.privileges cp2
+                    WHERE cp2.user = :userId
+                        AND cp2.privilege = :privilege
+                    ORDER BY c.name ASC, p.rank ASC, u.username ASC, s.fromDate DESC"
+            )
+            ->setParameter('userId', $user->getId())
+            ->setParameter('privilege', PrivilegeRepository::ADMIN_CODE);
 
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            throw $e;
+        }
+
+    }
+    /** @deprecated */
+    public function findUserModeratorCommunities(User $user)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                "   SELECT c, s, cp, p, u
+                    FROM MbyCommunityBundle:Community c
+                        LEFT JOIN c.seasons s
+                        JOIN c.privileges cp
+                        JOIN cp.privilege p
+                        JOIN cp.user u
+                        JOIN c.privileges cp2
+                    WHERE cp2.user = :userId
+                        AND cp2.privilege = :privilege
+                    ORDER BY c.name ASC, p.rank ASC, u.username ASC, s.fromDate DESC"
+            )
+            ->setParameter('userId', $user->getId())
+            ->setParameter('privilege', PrivilegeRepository::MODERATOR_CODE);
+
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            throw $e;
+        }
+
+    }
+    /** @deprecated */
     public function findAllUserCommunities(User $user)
     {
         $query = $this->getEntityManager()
@@ -65,7 +118,7 @@ class CommunityRepository extends EntityRepository
     }
 
 
-
+    /** @deprecated */
     public function findOtherCommunities(User $user)
     {
         $entityManager = $this->getEntityManager();
@@ -116,28 +169,5 @@ class CommunityRepository extends EntityRepository
 
     }
 
-    public function findJoinableCommunities()
-    {
-        $entityManager = $this->getEntityManager();
-
-        $query = $entityManager->createQuery(
-            '   SELECT c, s, m, r
-                    FROM MbyCommunityBundle:Community c
-                        JOIN c.seasons s
-                        LEFT JOIN s.memberships m
-                        LEFT JOIN m.responsibilities r
-                    WHERE ( s.toDate IS NULL OR s.toDate >= :today )
-                        AND c.joinable = 1
-                    ORDER BY s.fromDate DESC, r.id ASC, c.name ASC'
-            )
-            ->setParameter('today', (new \DateTime())->format("Y-m-d"));
-
-        try {
-            return $query->getResult();
-        } catch (\Doctrine\ORM\NoResultException $e) {
-            throw $e;
-        }
-
-    }
 
 }

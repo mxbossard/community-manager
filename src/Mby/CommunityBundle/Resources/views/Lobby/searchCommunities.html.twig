@@ -4,8 +4,8 @@
 
     <h1>{{ 'search for communities' | trans({}, 'MbyCommunityBundle') | capitalize }}</h1>
 
-    {% for community in communities %}
-        {{ include('MbyCommunityBundle:Season:render.html.twig', {'season' : community.seasons.first, 'panel_classes' : 'panel-info'}) }}
+    {% for season in seasons %}
+        {{ include('MbyCommunityBundle:Season:season.html.twig', {'season' : season, 'panel_classes' : 'panel-info'}) }}
     {% endfor %}
 
 {% endblock %}

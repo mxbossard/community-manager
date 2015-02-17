@@ -1,0 +1,55 @@
+{% extends 'MbyCommunityBundle::itemInPanel.html.twig' %}
+
+{% set user = app.user %}
+{% set community = season.community %}
+
+{% block panel %}
+    {% set obj_class = 'obj_season' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}
+    {{ include('MbyCommunityBundle:Season:icon.html.twig') }}
+    {{ community.name }} - {{ season.name }}
+
+{% endblock %}
+
+{% block content %}
+
+    <p>
+        {{ community.description }}
+    </p>
+
+    <p>
+        {{ season.note }}
+    </p>
+
+{% endblock %}
+
+{% block infos %}
+
+{% endblock %}
+
+{% block actions %}
+    {% if community.email is defined %}
+        {{ include('MbyCommunityBundle:Action:email.html.twig', {'email' : community.email})  }}
+    {% endif %}
+
+    {% if season.active %}
+        {{ include('MbyCommunityBundle:Action:apply.html.twig', {'seasonId' : season.id})  }}
+    {% endif %}
+
+    {{ include('MbyCommunityBundle:Action:follow.html.twig', {'communityId' : community.id})  }}
+{% endblock %}
+
+{% block footer %}
+
+    {{ 'from' | trans({}, 'MbyCommunityBundle') | capitalize }}: {{ season.fromDate | localizeddate('medium', 'none', app.request.locale) }}
+
+    {% if season.toDate %}
+        -
+        {{ 'to' | trans({}, 'MbyCommunityBundle') | capitalize }}: {{ season.toDate | localizeddate('medium', 'none', app.request.locale) }}
+    {% endif %}
+
+{% endblock %}
+

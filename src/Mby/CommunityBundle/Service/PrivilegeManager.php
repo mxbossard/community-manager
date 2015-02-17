@@ -33,23 +33,23 @@ class PrivilegeManager
 
     public function isOwner(User $user, Community $community)
     {
-        $privilegeOwner = $this->privilegeRepo->find(PrivilegeRepository::OWNER_CODE);
+        //$privilege = $this->loadPrivilege(PrivilegeRepository::OWNER_CODE);
 
-        return $this->findPrivilege($user, $community, $privilegeOwner);
+        return $this->isPrivileged($user, $community, PrivilegeRepository::OWNER_CODE);
     }
 
     public function isAdministrator(User $user, Community $community)
     {
-        $privilegeAdmin = $this->privilegeRepo->find(PrivilegeRepository::ADMIN_CODE);
+        //$privilege = $this->loadPrivilege(PrivilegeRepository::ADMIN_CODE);
 
-        return $this->findPrivilege($user, $community, $privilegeAdmin);
+        return $this->isPrivileged($user, $community, PrivilegeRepository::ADMIN_CODE);
     }
 
     public function isModerator(User $user, Community $community)
     {
-        $privilegeModerator = $this->privilegeRepo->find(PrivilegeRepository::MODERATOR_CODE);
+        //$privilege = $this->loadPrivilege(PrivilegeRepository::MODERATOR_CODE);
 
-        return $this->findPrivilege($user, $community, $privilegeModerator);
+        return $this->isPrivileged($user, $community, PrivilegeRepository::MODERATOR_CODE);
     }
 
     public function grantOwnerPrivilege(User $user, User $target, Community $community)
@@ -58,7 +58,7 @@ class PrivilegeManager
             throw new Exception("user must be owner to grant owner privilege");
         }
 
-        $privilege= $this->privilegeRepo->find(PrivilegeRepository::OWNER_CODE);
+        $privilege = $this->loadPrivilege(PrivilegeRepository::OWNER_CODE);
         $target->addPrivilege($privilege);
     }
 
@@ -68,7 +68,7 @@ class PrivilegeManager
             throw new Exception("user must be owner or administrator to grant administrator privilege");
         }
 
-        $privilege= $this->privilegeRepo->find(PrivilegeRepository::ADMIN_CODE);
+        $privilege = $this->loadPrivilege(PrivilegeRepository::ADMIN_CODE);
         $target->addPrivilege($privilege);
     }
 
@@ -78,7 +78,7 @@ class PrivilegeManager
             throw new Exception("user must be administrator to grant moderator privilege");
         }
 
-        $privilege = $this->privilegeRepo->find(PrivilegeRepository::MODERATOR_CODE);
+        $privilege = $this->loadPrivilege(PrivilegeRepository::MODERATOR_CODE);
         $target->addPrivilege($privilege);
     }
 
@@ -88,7 +88,7 @@ class PrivilegeManager
             throw new Exception("user must be owner to revoke owner privilege");
         }
 
-        $privilege= $this->privilegeRepo->find(PrivilegeRepository::OWNER_CODE);
+        $privilege = $this->loadPrivilege(PrivilegeRepository::OWNER_CODE);
         $target->removePrivilege($privilege);
     }
 
@@ -98,7 +98,7 @@ class PrivilegeManager
             throw new Exception("user must be owner to revoke administrator privilege");
         }
 
-        $privilege= $this->privilegeRepo->find(PrivilegeRepository::ADMIN_CODE);
+        $privilege = $this->loadPrivilege(PrivilegeRepository::ADMIN_CODE);
         $target->removePrivilege($privilege);
     }
 
@@ -108,7 +108,7 @@ class PrivilegeManager
             throw new Exception("user must be administrator to revoke moderator privilege");
         }
 
-        $privilege = $this->privilegeRepo->find(PrivilegeRepository::MODERATOR_CODE);
+        $privilege = $this->loadPrivilege(PrivilegeRepository::MODERATOR_CODE);
         $target->removePrivilege($privilege);
     }
 
@@ -118,17 +118,26 @@ class PrivilegeManager
      * @param $privilegeAdmin
      * @return bool
      */
-    protected function findPrivilege(User $user, Community $community, $privilegeAdmin)
+    protected function isPrivileged(User $user, Community $community, $privilegeCode)
     {
-        foreach ($user->getPrivileges() as $privilege) {
-            if ($privilege->getCommunity()->getId() === $community->getId()
-                && $privilege->getId() === $privilegeAdmin->getId()
+        foreach ($user->getPrivileges() as $p) {
+            if ($p->getCommunity()->getId() === $community->getId()
+                && $p->getPrivilege()->getCode() === $privilegeCode
             ) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * @return Privilege
+     */
+    protected function loadPrivilege($code)
+    {
+        $privilege = $this->em->getReference("MbyCommunityBundle:Privilege", $code);
+        return $privilege;
     }
 
 }

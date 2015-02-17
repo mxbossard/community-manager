@@ -39,8 +39,13 @@ class LoadResponsibilityData extends AbstractFixture implements OrderedFixtureIn
         $applicant->setName('applicant');
         $manager->persist($applicant);
 
+        $follower = new Responsibility();
+        $follower->setName('follower');
+        $manager->persist($follower);
+
         $manager->flush();
 
+        $this->addReference('resp-follower', $follower);
         $this->addReference('resp-applicant', $applicant);
         $this->addReference('resp-member', $member);
         $this->addReference('resp-president', $president);

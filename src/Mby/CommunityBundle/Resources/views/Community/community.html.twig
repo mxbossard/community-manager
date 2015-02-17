@@ -1,0 +1,77 @@
+{% extends 'MbyCommunityBundle::itemInPanel.html.twig' %}
+
+{% set OWNER_CODE = constant('\\Mby\\CommunityBundle\\Entity\\PrivilegeRepository::OWNER_CODE') %}
+{% set ADMIN_CODE = constant('\\Mby\\CommunityBundle\\Entity\\PrivilegeRepository::ADMIN_CODE') %}
+{% set MODERATOR_CODE = constant('\\Mby\\CommunityBundle\\Entity\\PrivilegeRepository::MODERATOR_CODE') %}
+
+{% set user = app.user %}
+{% set seasons = community.seasons %}
+
+{% block panel %}
+    {% set obj_class = 'obj_community' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}
+    {{ include('MbyCommunityBundle:Community:icon.html.twig') }}
+    {{ community.name }}
+{% endblock %}
+
+{% block content %}
+    <p>
+        {{ community.description }}
+    </p>
+{% endblock %}
+
+{% block infos %}
+    {% if community.joinable %}
+            <span class="label label-primary large">{{ 'joinable' | trans({}, 'MbyCommunityBundle') | capitalize }}</span>
+    {% endif %}
+{% endblock %}
+
+{% block actions %}
+    {% if community.email is defined %}
+        {{ include('MbyCommunityBundle:Action:email.html.twig', {'email' : community.email})  }}
+    {% endif %}
+{% endblock %}
+
+{% block bottom %}
+    {% if privileges is defined and privileges is not empty %}
+
+        <h4>
+            {{ 'privileges users' | trans({}, 'MbyCommunityBundle') | capitalize }}
+            <span class="badge">{{ privileges | length }}</span>
+        </h4>
+
+        <ul class="list-inline">
+            {% for privilege in privileges %}
+                <li>{{ include('MbyCommunityBundle:User:user-thin.html.twig', {'user' : privilege.user, 'user_classes' : privilege.privilege.code})  }}</li>
+            {% endfor %}
+
+        </ul>
+
+    {% endif %}
+
+    {% if seasons is defined and seasons is not empty %}
+
+        <h4>
+            {{ 'seasons' | trans({}, 'MbyCommunityBundle') | capitalize }}
+            <span class="badge">{{ seasons | length }}</span>
+        </h4>
+
+        <ul class="list-inline">
+            {% for season in seasons %}
+                <li>{{ include('MbyCommunityBundle:Season:season-thin.html.twig', {'season' : season})  }}</li>
+            {% endfor %}
+
+        </ul>
+
+    {% endif %}
+
+{% endblock %}
+
+{% block footer %}
+    {{ 'created on' | trans({}, 'MbyCommunityBundle') | capitalize }}: {{ community.createdAt | localizeddate('medium', 'none', app.request.locale) }}
+    -
+    {{ 'last updated on' | trans({}, 'MbyCommunityBundle') | capitalize }}: {{ community.updatedAt | localizeddate('medium', 'none', app.request.locale) }}
+{% endblock %}
