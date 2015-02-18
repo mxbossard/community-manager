@@ -22,19 +22,47 @@ use Symfony\Component\HttpFoundation\Response;
  * Class CommunityOwnerController
  * @package Mby\CommunityBundle\Controller
  *
- * @Route("/community-owner")
+ * @Route("/manageCommunity")
  */
 class CommunityOwnerController extends Controller
 {
 
 	/**
-	 * Display user current memberships.
+	 * Display community managing index.
 	 *
-     * @Route("/{id}", name="communityOwner")
+     * @Route("/{id}", name="community_manage")
      * @Method("GET")
      * @Security("has_role('ROLE_USER')")
      */
     public function indexAction(Community $community)
+    {
+        $user= $this->get('security.context')->getToken()->getUser();
+
+        return new Response($community->getName());
+    }
+
+    /**
+     * Add new owner.
+     *
+     * @Route("/newOwner", name="community_newOwner")
+     * @Method("POST")
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function newOwnerAction(Request $request)
+    {
+        $user= $this->get('security.context')->getToken()->getUser();
+
+        return new Response($community->getName());
+    }
+
+    /**
+     * Add new admin.
+     *
+     * @Route("newAdmin/{communityId}/{userId}", name="community_newOwner")
+     * @Method("POST")
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function newAdminAction(Request $request)
     {
         $user= $this->get('security.context')->getToken()->getUser();
 

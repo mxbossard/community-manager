@@ -51,7 +51,7 @@
         </form>
 
     {% elseif 'member' not in responsibilities and season.active %}
-        {{ include('MbyCommunityBundle:Action:apply.html.twig', {'seasonId' : season.id})  }}
+        {{ include('MbyCommunityBundle:Action:apply.html.twig', {'seasonId' : season.id, 'form': actionForm})  }}
     {% endif %}
 
 {% endblock %}

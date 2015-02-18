@@ -3,6 +3,7 @@
 namespace Mby\CommunityBundle\Controller;
 
 use Mby\CommunityBundle\Entity\Membership;
+use Mby\CommunityBundle\Form\Type\ActionType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -41,8 +42,11 @@ class LobbyController extends Controller
             ->getRepository('MbyCommunityBundle:Membership')
             ->findUserActiveMemberships($user);
 
+        $actionForm = $this->createForm(new ActionType());
+
         return $this->render('MbyCommunityBundle:Lobby:myMemberships.html.twig', array(
-            'memberships' => $myMemberships
+            'memberships' => $myMemberships,
+            'actionForm' => $actionForm->createView(),
         ));
     }
 
@@ -81,8 +85,11 @@ class LobbyController extends Controller
             ->getRepository('MbyCommunityBundle:Season')
             ->findUserApplicableSeasons($user);
 
+        $actionForm = $this->createForm(new ActionType());
+
         return $this->render('MbyCommunityBundle:Lobby:searchCommunities.html.twig', array(
-            'seasons' => $seasons
+            'seasons' => $seasons,
+            'actionForm' => $actionForm->createView(),
         ));
     }
 

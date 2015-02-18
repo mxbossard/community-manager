@@ -3,6 +3,7 @@
 namespace Mby\CommunityBundle\Controller;
 
 use Mby\CommunityBundle\Entity\Membership;
+use Mby\CommunityBundle\Form\Type\ActionType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -35,14 +36,23 @@ class MembershipController extends Controller
      */
     public function applyAction(Request $request)
     {
-        $season = $this->getDoctrine()
-            ->getRepository('MbyCommunityBundle:Season')
-            ->find($request->get("season_id"));
+        $form = $this->createForm(new ActionType());
+        $form->handleRequest($request);
 
-        $msManager = $this->get(MembershipManager::SERVICE_NAME);
-        $user= $this->get('security.context')->getToken()->getUser();
+        if ($form->isValid()) {
+            $seasonId = $form["id"]->getData();
 
-        $msManager->apply($user, $season, null, null);
+            $season = $this->getDoctrine()
+                ->getRepository('MbyCommunityBundle:Season')
+                ->find($seasonId);
+
+            $msManager = $this->get(MembershipManager::SERVICE_NAME);
+            $user= $this->get('security.context')->getToken()->getUser();
+
+            $msManager->apply($user, $season, null, null);
+        }
+
+
 
         return $this->redirectToRoute("lobby_myMemberships");
     }

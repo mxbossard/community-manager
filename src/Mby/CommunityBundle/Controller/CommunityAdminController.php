@@ -22,15 +22,15 @@ use Symfony\Component\HttpFoundation\Response;
  * Class CommunityAdminController
  * @package Mby\CommunityBundle\Controller
  *
- * @Route("/community-admin")
+ * @Route("/administrateCommunity")
  */
 class CommunityAdminController extends Controller
 {
 
 	/**
-	 * Display user current memberships.
+	 * Display community administration index
 	 *
-     * @Route("/{id}", name="communityAdmin")
+     * @Route("/{id}", name="community_administrate")
      * @Method("GET")
      * @Security("has_role('ROLE_USER')")
      */
