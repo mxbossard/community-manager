@@ -1,10 +1,9 @@
 <form class="form-inline" action="{{ path("membership_apply") }}" method="post">
-
-    {{ form_widget(form.id, {'attr': {'value': seasonId}}) }}
-    {{ form_widget(form._token) }}
+    <input type="hidden" name="id" value="{{ seasonId }}"/>
+    <input type="hidden" name="_token" value="{{ csrf_token('apply') }}"/>
 
     <button class="btn btn-success">
-        {{ include('MbyCommunityBundle:Action:apply-icon.html.twig') }}
+        {{ include('MbyCommunityBundle:Action:apply_icon.html.twig') }}
         {{ 'apply' | trans({}, 'MbyCommunityBundle') | capitalize }}
     </button>
 </form>

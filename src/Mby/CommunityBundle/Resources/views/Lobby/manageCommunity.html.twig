@@ -1,0 +1,111 @@
+{% extends 'MbyCommunityBundle:Lobby:lobbyLayout.html.twig' %}
+
+{% block navTabs %}
+    {% set layout_activeTab='lobby_ownership' %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block page %}
+    {#      {{ form(form) }}  #}
+
+
+    {{ form_start(form) }}
+
+    {% for child in form.community.children %}
+        {{ form_row(child) }}
+    {% endfor %}
+
+    <div class="form-inline">
+        {#
+        {{ form_row(form.privilegedUsers.vars.prototype) }}
+        #}
+    </div>
+
+    <div class="form-group">
+
+        {{ form_label(form.privilegedUsers) }}
+
+        <div class="col-sm-10 text-left">
+            <table>
+                <thead>
+                    <tr class="row">
+                        <th class="col-sm-2 text-left">{{ 'username' | trans({}, 'MbyCommunityBundle') | capitalize }}</th>
+                        <th class="col-sm-1 text-center">{{ 'owner' | trans({}, 'MbyCommunityBundle') | capitalize }}</th>
+                        <th class="col-sm-1 text-center">{{ 'admin' | trans({}, 'MbyCommunityBundle') | capitalize }}</th>
+                        <th class="col-sm-1 text-center">{{ 'moderator' | trans({}, 'MbyCommunityBundle') | capitalize }}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for child in form.privilegedUsers.children %}
+                        <tr class="row">
+                            <td class="col-sm-2 text-left">
+                                {{ form_label(child, privilegedUsers[child.userId.vars.value].label) }}
+                                {{ form_row(child.userId) }}
+                                {{ form_row(child.communityId) }}
+                            </td>
+                            <td class="col-sm-1 text-center">
+                                <span class="privilege owner">
+                                    {{ form_row(child.owner) }}
+                                </span>
+                            </td>
+                            <td class="col-sm-1 text-center">
+                                <span class="privilege admin">
+                                    {{ form_row(child.admin) }}
+                                </span>
+                            </td>
+                            <td class="col-sm-1 text-center">
+                                <span class="privilege moderator">
+                                    {{ form_row(child.moderator) }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+{#
+        <div class="col-sm-10">
+
+            {% for child in form.privilegedUsers.children %}
+
+                <div class="form-group form-inline">
+                    {{ form_label(child, privilegedUsers[loop.index0].label) }}
+
+                    <span class="privilege owner">
+                        {{ form_row(child.owner) }}
+                    </span>
+                    <span class="privilege admin">
+                        {{ form_row(child.admin) }}
+                    </span>
+                    <span class="privilege moderator">
+                        {{ form_row(child.moderator) }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+#}
+
+    </div>
+
+    <div class="form-group">
+        <div class="form-inline col-sm-10 col-sm-offset-2">
+            {{ form_row(form.save) }}
+            {{ form_row(form.reset) }}
+        </div>
+    </div>
+
+
+{{ form_row(form._token) }}
+
+</form>
+
+{% endblock %}
+
+
+

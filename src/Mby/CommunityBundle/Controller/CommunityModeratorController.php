@@ -30,7 +30,7 @@ class CommunityModeratorController extends Controller
 	/**
 	 * Display community moderating index
 	 *
-     * @Route("/{id}", name="community_moderate")
+     * @Route("/{id}", name="community-moderate")
      * @Method("GET")
      * @Security("has_role('ROLE_USER')")
      */

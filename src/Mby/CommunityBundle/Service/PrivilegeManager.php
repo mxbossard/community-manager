@@ -5,6 +5,9 @@ namespace Mby\CommunityBundle\Service;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Mby\CommunityBundle\Entity\CommunityPrivilege;
+use Mby\CommunityBundle\Entity\CommunityPrivilegeRepository;
+use Mby\CommunityBundle\Model\PrivilegedUser;
 use Mby\UserBundle\Entity\User;
 use Mby\CommunityBundle\Entity\Community;
 use Mby\CommunityBundle\Entity\Privilege;
@@ -25,10 +28,16 @@ class PrivilegeManager
      */
     protected $privilegeRepo;
 
+    /**
+     * @var CommunityPrivilegeRepository
+     */
+    protected $comPrivRepo;
+
     public function __construct(EntityManager $entityManager)
     {
         $this->em = $entityManager;
         $this->privilegeRepo = $this->em->getRepository('MbyCommunityBundle:Privilege');
+        $this->comPrivRepo = $this->em->getRepository('MbyCommunityBundle:CommunityPrivilege');
     }
 
     public function isOwner(User $user, Community $community)

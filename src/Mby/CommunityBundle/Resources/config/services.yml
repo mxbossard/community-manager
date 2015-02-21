@@ -20,3 +20,13 @@ services:
     membership_manager:
         class:     Mby\CommunityBundle\Service\MembershipManager
         arguments: [ "@doctrine.orm.entity_manager" , "@privilege_manager", "@responsibility_manager"  ]
+
+    community_facade:
+        class:     Mby\CommunityBundle\Service\Facade\CommunityFacade
+        arguments: [ "@doctrine.orm.entity_manager", "@community_manager", "@privilege_manager" ]
+
+    form.type.manage_community:
+        class: Mby\CommunityBundle\Form\Type\ManageCommunityType
+        arguments: [ "@doctrine.orm.entity_manager" ]
+        tags:
+            - { name: form.type, alias: manage_community }

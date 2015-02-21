@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 
+{# Default config #}
+{% set layout_activeTab = app.request.get('_route') %}
+
 {% if form is defined %}
     {# Use bootstrap 3 horizontal layout to render forms #}
     {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}

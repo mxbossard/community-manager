@@ -34,7 +34,7 @@ class CommunityManager
 	 * Create a new community.
 	 *
      */
-    protected function create(User $user, Community $community)
+    public function create(User $user, Community $community)
     {
         $privilegeRepo = $this->em->getRepository('MbyCommunityBundle:Privilege');
         $ownerPrivilege = $privilegeRepo->find(PrivilegeRepository::OWNER_CODE);
@@ -53,8 +53,6 @@ class CommunityManager
         $this->em->persist($community);
         $this->em->persist($ownerRel);
         $this->em->persist($adminRel);
-
-        $this->em->flush();
     }
 
 }

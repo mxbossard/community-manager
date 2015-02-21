@@ -11,13 +11,11 @@ class CommunityType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('id', 'hidden')
             ->add('name')
-            ->add('description')
             ->add('email')
+            ->add('description')
             ->add('note')
-            ->add('created')
-            ->add('updated')
-            ->add('owner')
         ;
     }
 

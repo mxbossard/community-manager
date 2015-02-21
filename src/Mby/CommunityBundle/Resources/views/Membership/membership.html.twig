@@ -41,17 +41,10 @@
     {% endif %}
 
     {% if 'applicant' in responsibilities %}
-        <form action="{{ path("membership_cancelApplication") }}" method="post">
-            <input type="hidden" name="user_id" value="{{ membership.user.id }}"/>
-            <input type="hidden" name="season_id" value="{{ season.id }}"/>
-            <button class="btn btn-danger">
-                <span class="glyphicon glyphicon-remove"></span>
-                {{ 'cancel my application' | trans({}, 'MbyCommunityBundle') | capitalize }}
-            </button>
-        </form>
+        {{ include('MbyCommunityBundle:Action:cancel-apply.html.twig', {'seasonId' : season.id})  }}
 
     {% elseif 'member' not in responsibilities and season.active %}
-        {{ include('MbyCommunityBundle:Action:apply.html.twig', {'seasonId' : season.id, 'form': actionForm})  }}
+        {{ include('MbyCommunityBundle:Action:apply.html.twig', {'seasonId' : season.id})  }}
     {% endif %}
 
 {% endblock %}

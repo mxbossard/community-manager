@@ -19,7 +19,6 @@ class AppKernel extends Kernel
 	        new Lexik\Bundle\FormFilterBundle\LexikFormFilterBundle(),
 	        new JordiLlonch\Bundle\CrudGeneratorBundle\JordiLlonchCrudGeneratorBundle(),
             new AppBundle\AppBundle(),
-            new MxBossard\CommunityMgrBundle\MxBossardCommunityMgrBundle(),
             new Mby\UserBundle\MbyUserBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Mby\CommunityBundle\MbyCommunityBundle(),

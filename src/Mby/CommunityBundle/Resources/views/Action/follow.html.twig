@@ -1,7 +1,9 @@
 <form class="form-inline" action="{{ path("membership_apply") }}" method="post">
     <input type="hidden" name="id" value="{{ communityId }}"/>
+    <input type="hidden" name="_token" value="{{ csrf_token('follow') }}"/>
+
     <button class="btn btn-info">
-        {{ include('MbyCommunityBundle:Action:follow-icon.html.twig') }}
+        {{ include('MbyCommunityBundle:Action:follow_icon.html.twig') }}
         {{ 'follow' | trans({}, 'MbyCommunityBundle') | capitalize }}
     </button>
 </form>

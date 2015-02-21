@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class CommunityAdminController
  * @package Mby\CommunityBundle\Controller
  *
- * @Route("/administrateCommunity")
+ * @Route("/adminCommunity")
  */
 class CommunityAdminController extends Controller
 {
@@ -30,7 +30,7 @@ class CommunityAdminController extends Controller
 	/**
 	 * Display community administration index
 	 *
-     * @Route("/{id}", name="community_administrate")
+     * @Route("/{id}", name="community-admin")
      * @Method("GET")
      * @Security("has_role('ROLE_USER')")
      */

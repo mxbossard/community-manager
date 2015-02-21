@@ -1,0 +1,12 @@
+<form action="{{ path("membership_cancelApplication") }}" method="post">
+
+    <input type="hidden" name="user_id" value="{{ membership.user.id }}"/>
+    <input type="hidden" name="season_id" value="{{ season.id }}"/>
+    <input type="hidden" name="_token" value="{{ csrf_token('cancel-apply') }}"/>
+
+    <button class="btn btn-danger">
+        {{ include('MbyCommunityBundle:Action:cancel-apply_icon.html.twig') }}
+        {{ 'cancel my application' | trans({}, 'MbyCommunityBundle') | capitalize }}
+    </button>
+
+</form>

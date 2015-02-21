@@ -77,6 +77,16 @@ class User extends BaseUser
         $this->updated = new \DateTime();
     }
 
+    /**
+     * @param int $id
+     * @return User
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * Get id

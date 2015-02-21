@@ -8,5 +8,5 @@
 {% block actions %}
     {{ parent() }}
 
-    {{ include('MbyCommunityBundle:Action:manage.html.twig', {route : 'communityOwner', params : {id : community.id}})  }}
+    {{ include('MbyCommunityBundle:Action:manage.html.twig', {route : 'community-manage', params : {id : community.id}})  }}
 {% endblock %}

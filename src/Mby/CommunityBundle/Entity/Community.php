@@ -94,7 +94,7 @@ class Community extends AbstractBaseEntity
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->seasons = new ArrayCollection();
         $this->privileges = new ArrayCollection();
         $this->joinable = true;
@@ -106,6 +106,17 @@ class Community extends AbstractBaseEntity
      */
     public function __toString() {
         return $this->name;
+    }
+
+    /**
+     * @param int $id
+     * @return Community
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

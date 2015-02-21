@@ -2,9 +2,9 @@
 
 namespace Mby\CommunityBundle\Controller;
 
+use AppBundle\Controller\AbstractController;
 use Mby\CommunityBundle\Entity\Membership;
 use Mby\CommunityBundle\Form\Type\ActionType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -24,7 +24,7 @@ use Mby\CommunityBundle\Service\MembershipManager;
  *
  * @Route("/membership")
  */
-class MembershipController extends Controller
+class MembershipController extends AbstractController
 {
 
 	/**
@@ -36,23 +36,18 @@ class MembershipController extends Controller
      */
     public function applyAction(Request $request)
     {
-        $form = $this->createForm(new ActionType());
-        $form->handleRequest($request);
+        $this->assertValidCrsf($request, "apply");
 
-        if ($form->isValid()) {
-            $seasonId = $form["id"]->getData();
+        $seasonId = $request->get('id');
 
-            $season = $this->getDoctrine()
-                ->getRepository('MbyCommunityBundle:Season')
-                ->find($seasonId);
+        $season = $this->getDoctrine()
+            ->getRepository('MbyCommunityBundle:Season')
+            ->find($seasonId);
 
-            $msManager = $this->get(MembershipManager::SERVICE_NAME);
-            $user= $this->get('security.context')->getToken()->getUser();
+        $msManager = $this->get(MembershipManager::SERVICE_NAME);
+        $user= $this->get('security.context')->getToken()->getUser();
 
-            $msManager->apply($user, $season, null, null);
-        }
-
-
+        $msManager->apply($user, $season, null, null);
 
         return $this->redirectToRoute("lobby_myMemberships");
     }
@@ -66,6 +61,8 @@ class MembershipController extends Controller
      */
     public function validApplicationAction(Request $request)
     {
+        $this->assertValidCrsf($request, "valid-application");
+
         $membership = $this->getDoctrine()
             ->getRepository('MbyCommunityBundle:Membership')
             ->find(array(
@@ -90,6 +87,8 @@ class MembershipController extends Controller
      */
     public function cancelApplicationAction(Request $request)
     {
+        $this->assertValidCrsf($request, "cancel-apply");
+
         $membership = $this->getDoctrine()
             ->getRepository('MbyCommunityBundle:Membership')
             ->find(array(
@@ -121,7 +120,7 @@ class MembershipController extends Controller
         ->findAllUserCommunities($user);
 
         return $this->render('MbyCommunityBundle:Membership:myCommunities.html.twig', array(
-            'communities' => $communities
+            'communities' => $communities,
         ));
 
     }

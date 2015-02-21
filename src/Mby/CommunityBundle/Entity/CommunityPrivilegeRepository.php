@@ -18,6 +18,10 @@ class CommunityPrivilegeRepository extends EntityRepository
 	const ADMIN_CODE = 'admin';
     const MODERATOR_CODE = 'moderator';
 
+	/**
+	 * @param User $user
+	 * @return array
+	 */
 	public function findUserOwnerPrivileges(User $user)
 	{
 		$em = $this->getEntityManager();
@@ -41,6 +45,10 @@ class CommunityPrivilegeRepository extends EntityRepository
 		return $result;
 	}
 
+	/**
+	 * @param User $user
+	 * @return array
+	 */
 	public function findUserAdminPrivileges(User $user)
 	{
 		$em = $this->getEntityManager();
@@ -64,6 +72,10 @@ class CommunityPrivilegeRepository extends EntityRepository
 		return $result;
 	}
 
+	/**
+	 * @param User $user
+	 * @return array
+	 */
 	public function findUserModeratorPrivileges(User $user)
 	{
 		$em = $this->getEntityManager();
@@ -81,6 +93,27 @@ class CommunityPrivilegeRepository extends EntityRepository
 			)
 			->setParameter('userId', $user->getId())
 			->setParameter('privilege', PrivilegeRepository::MODERATOR_CODE);
+
+		$result = $query->getResult();
+
+		return $result;
+	}
+
+	/**
+	 * @param Community $community
+	 * @return array
+	 */
+	public function findCommunityPrivileges(Community $community) {
+		$em = $this->getEntityManager();
+		$query = $em->createQuery(
+			"   SELECT cp, u
+                    FROM MbyCommunityBundle:CommunityPrivilege cp
+                        JOIN cp.user u
+                        JOIN cp.privilege p
+                    WHERE cp.community = :communityId
+                    ORDER BY p.rank ASC, u.username ASC"
+		)
+			->setParameter('communityId', $community->getId());
 
 		$result = $query->getResult();
 

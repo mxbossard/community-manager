@@ -8,5 +8,5 @@
 {% block actions %}
     {{ parent() }}
 
-    {{ include('MbyCommunityBundle:Action:moderate.html.twig', {route : 'communityModerator', params : {id : community.id}})  }}
+    {{ include('MbyCommunityBundle:Action:moderate.html.twig', {route : 'community-moderate', params : {id : community.id}})  }}
 {% endblock %}

@@ -42,11 +42,8 @@ class LobbyController extends Controller
             ->getRepository('MbyCommunityBundle:Membership')
             ->findUserActiveMemberships($user);
 
-        $actionForm = $this->createForm(new ActionType());
-
         return $this->render('MbyCommunityBundle:Lobby:myMemberships.html.twig', array(
             'memberships' => $myMemberships,
-            'actionForm' => $actionForm->createView(),
         ));
     }
 
@@ -85,11 +82,8 @@ class LobbyController extends Controller
             ->getRepository('MbyCommunityBundle:Season')
             ->findUserApplicableSeasons($user);
 
-        $actionForm = $this->createForm(new ActionType());
-
         return $this->render('MbyCommunityBundle:Lobby:searchCommunities.html.twig', array(
             'seasons' => $seasons,
-            'actionForm' => $actionForm->createView(),
         ));
     }
 
