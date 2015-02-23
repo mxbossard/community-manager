@@ -51,6 +51,8 @@ class CommunityManagerController extends AbstractController
             'action' => $this->generateUrl('community-manage_save'),
         ));
 
+        dump($privilegedUsers);
+
         return $this->render('MbyCommunityBundle:Lobby:manageCommunity.html.twig', array(
             "form" => $form->createView(),
             'privilegedUsers' => $privilegedUsers,
@@ -72,6 +74,7 @@ class CommunityManagerController extends AbstractController
         $community = $form['community']->getData();
         $privilegedUsers = $form['privilegedUsers']->getData();
 
+        dump($privilegedUsers);
         if ($form->isValid()) {
             $communityId = $community->getId();
 

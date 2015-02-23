@@ -283,4 +283,116 @@ class CommunityFacadeTest extends KernelTestCase
 
     }
 
+    /**
+     * Test adding CommunityPrivilege
+     */
+    public function testComparePrivilegedUsersAndCommunityPrivilegesBis1() {
+        /** @var CommunityFacade $facade */
+        $facade = $this->container->get(CommunityFacade::SERVICE_NAME);
+
+        $entities = $this->buildEntities();
+        $community = $entities['community'];
+        $community->addPrivilege($entities['cp2']);
+
+        $privilegedUsers = array();
+        $privilegedUsers[] = $entities['pu2'];
+        $privilegedUsers[] = $entities['pu1'];
+        $privilegedUsers[] = $entities['pu3'];
+
+        $comparisons = $facade->comparePrivilegedUsersAndCommunityPrivilegesBis($community->getPrivileges(), $privilegedUsers);
+
+        $this->assertEquals(1, count($comparisons['keep']), 'Bad CommunityPrivilege to keep count');
+        $this->assertEquals(5, count($comparisons['add']), 'Bad CommunityPrivilege to add count');
+        $this->assertEquals(0, count($comparisons['remove']), 'Bad CommunityPrivilege to remove count');
+
+        $toKeep = array_map(function($e) {return serialize($e);}, $comparisons['keep']);
+        $toAdd =  array_map(function($e) {return serialize($e);}, $comparisons['add']);
+
+        $this->assertContains(serialize($entities['cp2']), $toKeep, 'CommunityPrivilege cp2 should be kept');
+
+        $this->assertContains(serialize($entities['cp1']), $toAdd, 'CommunityPrivilege cp1 should be added');
+        $this->assertContains(serialize($entities['cp3']), $toAdd, 'CommunityPrivilege cp1 should be added');
+        $this->assertContains(serialize($entities['cp4']), $toAdd, 'CommunityPrivilege cp1 should be added');
+        $this->assertContains(serialize($entities['cp5']), $toAdd, 'CommunityPrivilege cp1 should be added');
+        $this->assertContains(serialize($entities['cp6']), $toAdd, 'CommunityPrivilege cp1 should be added');
+    }
+
+    /**
+     * Test remove CommunityPrivilege
+     */
+    public function testComparePrivilegedUsersAndCommunityPrivilegesBis2() {
+        /** @var CommunityFacade $facade */
+        $facade = $this->container->get(CommunityFacade::SERVICE_NAME);
+
+        $entities = $this->buildEntities();
+        $community = $entities['community'];
+        $community
+            ->addPrivilege($entities['cp6'])
+            ->addPrivilege($entities['cp7'])
+            ->addPrivilege($entities['cp1'])
+            ->addPrivilege($entities['cp4'])
+            ->addPrivilege($entities['cp5'])
+        ;
+
+        $privilegedUsers = array();
+        $privilegedUsers[] = $entities['pu1'];
+        $privilegedUsers[] = $entities['pu3b'];
+
+        $comparisons = $facade->comparePrivilegedUsersAndCommunityPrivilegesBis($community->getPrivileges(), $privilegedUsers);
+
+        $this->assertEquals(3, count($comparisons['keep']), 'Bad CommunityPrivilege to keep count');
+        $this->assertEquals(0, count($comparisons['add']), 'Bad CommunityPrivilege to add count');
+        $this->assertEquals(2, count($comparisons['remove']), 'Bad CommunityPrivilege to remove count');
+
+        $toKeep = array_map(function($e) {return serialize($e);}, $comparisons['keep']);
+        $toRemove =  array_map(function($e) {return serialize($e);}, $comparisons['remove']);
+
+        $this->assertContains(serialize($entities['cp1']), $toKeep, 'CommunityPrivilege cp1 should be kept');
+        $this->assertContains(serialize($entities['cp5']), $toKeep, 'CommunityPrivilege cp5 should be kept');
+        $this->assertContains(serialize($entities['cp6']), $toKeep, 'CommunityPrivilege cp6 should be kept');
+
+        $this->assertContains(serialize($entities['cp4']), $toRemove, 'CommunityPrivilege cp4 should be removed');
+        $this->assertContains(serialize($entities['cp7']), $toRemove, 'CommunityPrivilege cp7 should be removed');
+    }
+
+    /**
+     * Test add and remove CommunityPrivilege
+     */
+    public function testComparePrivilegedUsersAndCommunityPrivilegesBis3() {
+        /** @var CommunityFacade $facade */
+        $facade = $this->container->get(CommunityFacade::SERVICE_NAME);
+
+        $entities = $this->buildEntities();
+        $community = $entities['community'];
+        $community->addPrivilege($entities['cp1'])
+            ->addPrivilege($entities['cp2'])
+            ->addPrivilege($entities['cp4'])
+            ->addPrivilege($entities['cp5'])
+            ->addPrivilege($entities['cp6']);
+
+        $privilegedUsers = array();
+        $privilegedUsers[] = $entities['pu4'];
+        $privilegedUsers[] = $entities['pu3c'];
+
+        $comparisons = $facade->comparePrivilegedUsersAndCommunityPrivilegesBis($community->getPrivileges(), $privilegedUsers);
+
+        $this->assertEquals(1, count($comparisons['keep']), 'Bad CommunityPrivilege to keep count');
+        $this->assertEquals(1, count($comparisons['add']), 'Bad CommunityPrivilege to add count');
+        $this->assertEquals(4, count($comparisons['remove']), 'Bad CommunityPrivilege to remove count');
+
+        $toKeep = array_map(function($e) {return serialize($e);}, $comparisons['keep']);
+        $toAdd =  array_map(function($e) {return serialize($e);}, $comparisons['add']);
+        $toRemove =  array_map(function($e) {return serialize($e);}, $comparisons['remove']);
+
+        $this->assertContains(serialize($entities['cp5']), $toKeep, 'CommunityPrivilege cp5 should be kept');
+
+        $this->assertContains(serialize($entities['cp7']), $toAdd, 'CommunityPrivilege cp7 should be added');
+
+        $this->assertContains(serialize($entities['cp1']), $toRemove, 'CommunityPrivilege cp1 should be removed');
+        $this->assertContains(serialize($entities['cp2']), $toRemove, 'CommunityPrivilege cp2 should be removed');
+        $this->assertContains(serialize($entities['cp4']), $toRemove, 'CommunityPrivilege cp4 should be removed');
+        $this->assertContains(serialize($entities['cp6']), $toRemove, 'CommunityPrivilege cp6 should be removed');
+
+    }
+
 }

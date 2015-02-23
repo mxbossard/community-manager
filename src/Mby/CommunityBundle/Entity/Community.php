@@ -51,7 +51,7 @@ class Community extends AbstractBaseEntity
      * @ORM\Column(name="email", type="string", length=100, nullable=true)
      * @Assert\Email(
      *     message = "community.email.valid",
-     *     checkMX = true
+     *     checkMX = false
      * )
      */
     private $email;

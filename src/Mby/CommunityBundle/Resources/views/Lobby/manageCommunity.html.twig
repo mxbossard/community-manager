@@ -27,6 +27,13 @@
         {{ form_label(form.privilegedUsers) }}
 
         <div class="col-sm-10 text-left">
+
+            <input type="text" value="" placeholder="{{ 'add a new privileged user' | trans({}, 'MbyCommunityBundle') | capitalize }}" />
+            <span class="btn btn-primary">
+                <span class="glyphicon glyphicon-add"></span>
+                {{ 'add' | trans({}, 'MbyCommunityBundle') | capitalize }}
+            </span>
+
             <table>
                 <thead>
                     <tr class="row">
@@ -39,6 +46,34 @@
 
                 <tbody>
                     {% for child in form.privilegedUsers.children %}
+                        {% set privilegedUser = privilegedUsers[child.userId.vars.value] %}
+
+                        {% if ownerTitleRendered is not defined and privilegedUser.owner %}
+                            {% set ownerTitleRendered = true %}
+                            <tr class="row">
+                                <td colspan="4">
+                                    {{ 'owners' | trans({}, 'MbyCommunityBundle') | capitalize }}
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        {% if adminTitleRendered is not defined and not privilegedUser.owner and privilegedUser.admin %}
+                            {% set adminTitleRendered = true %}
+                            <tr class="row">
+                                <td colspan="4">
+                                    {{ 'admins' | trans({}, 'MbyCommunityBundle') | capitalize }}
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        {% if moderatorTitleRendered is not defined and not privilegedUser.owner and not privilegedUser.admin and privilegedUser.moderator %}
+                            {% set moderatorTitleRendered = true %}
+                            <tr class="row">
+                                <td colspan="4">
+                                    {{ 'moderators' | trans({}, 'MbyCommunityBundle') | capitalize }}
+                                </td>
+                            </tr>
+                        {% endif %}
                         <tr class="row">
                             <td class="col-sm-2 text-left">
                                 {{ form_label(child, privilegedUsers[child.userId.vars.value].label) }}

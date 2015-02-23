@@ -30,16 +30,16 @@ class SeasonManager
         $this->privilegeManager = $privilegeManager;
     }
 
-	/**
-	 * Create a new season.
-	 *
+    /**
+     * Create a new season.
+     *
+     * @param User $user
+     * @param Community $community
+     * @param Season $season
+     * @throws Exception
      */
-    protected function create(Season $season, User $user, Community $community)
+    public function create(User $user, Community $community, Season $season)
     {
-        if(! $this->privilegeManager->isAdministrator($user, $community)) {
-            throw new Exception("user must be administrator to create a season");
-        }
-
         $seasonRepo = $this->em->getRepository('MbyCommunityBundle:Season');
         $lastSeason = $seasonRepo->findLastSeason($community);
 
@@ -57,7 +57,6 @@ class SeasonManager
         $season->setCommunity($community);
 
         $this->em->persist($season);
-        $this->em->flush();
     }
 
 }

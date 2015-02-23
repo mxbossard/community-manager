@@ -90,11 +90,19 @@ class CommunityFacade
 
         $this->em->persist($community);
 
-        $this->mapPrivilegedUsersIntoCommunity($community, $privilegedUsers);
+        $communityPrivileges = $community->getPrivileges();
+        $comparison = $this->comparePrivilegedUsersAndCommunityPrivilegesBis($communityPrivileges, $privilegedUsers);
 
-        foreach($community->getPrivileges() as $privilege) {
-            $privilege->setCommunity($community);
-            $this->em->persist($privilege);
+        /** @var CommunityPrivilege $toAdd */
+        foreach($comparison['add'] as $toAdd) {
+            $toAdd->setCommunity($community);
+            $this->em->persist($toAdd);
+        }
+
+        /** @var CommunityPrivilege $toRemove */
+        foreach($comparison['remove'] as $toRemove) {
+            $toRemove->setCommunity($community);
+            $this->em->remove($toRemove);
         }
 
         $this->em->flush();
@@ -112,7 +120,7 @@ class CommunityFacade
         $comPrivRepo = $this->em->getRepository('MbyCommunityBundle:CommunityPrivilege');
         $communityPrivileges = $comPrivRepo->findCommunityPrivileges($community);
 
-        $privilegedUsers = $this->loadPrivilegedUsers($community, $communityPrivileges);
+        $privilegedUsers = $this->wrapCommunityPrivilegesToPrivilegedUsers($community, $communityPrivileges);
 
         return $privilegedUsers;
     }
@@ -136,92 +144,6 @@ class CommunityFacade
     }
 
     /**
-     * Create a new season.
-     *
-     * @param User $user
-     * @param Community $community
-     * @param Season $season
-     */
-    public function createNewSeason(User $user, Community $community, Season $season)
-    {
-        if (! $this->privilegeManager->isAdministrator($user, $community)) {
-            throw new AccessDeniedException();
-        }
-
-        $this->em->flush();
-    }
-
-    /**
-     * Update a season.
-     *
-     * @param User $user
-     * @param Season $season
-     */
-    public function updateSeason(User $user, Season $season)
-    {
-        if (! $this->privilegeManager->isAdministrator($user, $season->getCommunity())) {
-            throw new AccessDeniedException();
-        }
-
-        $this->em->flush();
-    }
-
-    /**
-     * Close a season.
-     *
-     * @param User $user
-     * @param Season $season
-     */
-    public function closeSeason(User $user, Season $season)
-    {
-        if (! $this->privilegeManager->isAdministrator($user, $season->getCommunity())) {
-            throw new AccessDeniedException();
-        }
-
-        $this->em->flush();
-    }
-
-    /**
-     * @param Community $community
-     * @param $communityPrivileges
-     * @return array
-     */
-    public function loadPrivilegedUsers(Community $community, $communityPrivileges)
-    {
-        $privilegedUsers = array();
-        /** @var PrivilegedUser $currentPrivilegedUser */
-        $currentPrivilegedUser = null;
-
-        // Map all CommunityPrivilege to some PrivilegedUser
-
-        /** @var CommunityPrivilege $communityPrivilege */
-        foreach ($communityPrivileges as $communityPrivilege) {
-            $user = $communityPrivilege->getUser();
-            $privilege = $communityPrivilege->getPrivilege();
-
-            if ($currentPrivilegedUser === null || $currentPrivilegedUser->getUserId() !== $user->getId()) {
-                $currentPrivilegedUser = new PrivilegedUser();
-                $currentPrivilegedUser->setCommunity($community);
-                $currentPrivilegedUser->setCommunityId($community->getId());
-                $currentPrivilegedUser->setUser($user);
-                $currentPrivilegedUser->setUserId($user->getId());
-                $currentPrivilegedUser->setLabel($user->getUsername());
-            }
-
-            if (PrivilegeRepository::OWNER_CODE === $privilege->getCode()) {
-                $currentPrivilegedUser->setOwner(true);
-            } else if (PrivilegeRepository::ADMIN_CODE === $privilege->getCode()) {
-                $currentPrivilegedUser->setAdmin(true);
-            } else if (PrivilegeRepository::MODERATOR_CODE === $privilege->getCode()) {
-                $currentPrivilegedUser->setModerator(true);
-            }
-
-            $privilegedUsers[$user->getId()] = $currentPrivilegedUser;
-        }
-        return $privilegedUsers;
-    }
-
-    /**
      * Compare passed array of @link PrivilegedUser and @link CommunityPrivilege contained in @link Community.
      * Return the comparison result:
      * array(
@@ -233,6 +155,7 @@ class CommunityFacade
      * @param Community $community
      * @param array $privilegedUsers
      * @return array
+     * @deprecated
      */
     public function comparePrivilegedUsersAndCommunityPrivileges(Community $community, $privilegedUsers)
     {
@@ -242,7 +165,7 @@ class CommunityFacade
         $usersInvolved = array();
 
         $indexedCommunityPrivileges = array();
-        /** @var CommunityPrivilege $communityPrivilege */
+        /** @var CommunityPrivilege $cp */
         foreach ($communityPrivileges as $cp) {
             $key = $cp->getUser()->getId() . $cp->getPrivilege()->getCode();
             $indexedCommunityPrivileges[$key] = $cp;
@@ -250,6 +173,7 @@ class CommunityFacade
             $usersInvolved[$cp->getUser()->getId()] = null;
         }
 
+        /** @var PrivilegedUser $pu */
         foreach($privilegedUsers as $pu) {
             $usersInvolved[$pu->getUserId()] = $pu;
         }
@@ -258,13 +182,13 @@ class CommunityFacade
         $communityPrivilegesToAdd = array();
         $communityPrivilegesToRemove = array();
 
-        /** @var PrivilegedUser $privilegedUser */
-        foreach ($usersInvolved as $userId => $privilegedUser) {
+        /** @var PrivilegedUser $pu */
+        foreach ($usersInvolved as $userId => $pu) {
 
             $userPrivilegesMap = array(
-                CommunityPrivilegeRepository::OWNER_CODE => $privilegedUser !== null && $privilegedUser->isOwner(),
-                CommunityPrivilegeRepository::ADMIN_CODE => $privilegedUser !== null && $privilegedUser->isAdmin(),
-                CommunityPrivilegeRepository::MODERATOR_CODE => $privilegedUser !== null && $privilegedUser->isModerator(),
+                CommunityPrivilegeRepository::OWNER_CODE => $pu !== null && $pu->isOwner(),
+                CommunityPrivilegeRepository::ADMIN_CODE => $pu !== null && $pu->isAdmin(),
+                CommunityPrivilegeRepository::MODERATOR_CODE => $pu !== null && $pu->isModerator(),
             );
 
             // index User's original CommunityPrivilege by privilege code
@@ -314,4 +238,119 @@ class CommunityFacade
         );
     }
 
+    /**
+     * Compare passed array of @link PrivilegedUser with passed array of @link CommunityPrivilege.
+     * Return the comparison result:
+     * array(
+     *      'keep' => $communityPrivilegesToKeep,
+     *      'add' => $communityPrivilegesToAdd,
+     *      'remove' => $communityPrivilegesToRemove,
+     * )
+     *
+     * @param array $communityPrivileges
+     * @param array $privilegedUsers
+     * @return array
+     */
+    public function comparePrivilegedUsersAndCommunityPrivilegesBis($communityPrivileges, $privilegedUsers) {
+
+        // index CommunityPrivilege array
+        $indexedCp = array();
+        /** @var CommunityPrivilege $cp */
+        foreach($communityPrivileges as $cp) {
+            $indexedCp[serialize($cp)] = $cp;
+        }
+
+        $indexedPu = array();
+        /** @var PrivilegedUser $pu */
+        foreach($privilegedUsers as $pu) {
+            $puWrappedToCps = $this->wrapPrivilegedUserToCommunityPrivileges($pu);
+
+            $indexedPu = array_merge($indexedPu, $puWrappedToCps);
+        }
+
+        $cpToKepp = array_intersect_key($indexedCp, $indexedPu);
+        $cpToAdd = array_diff_key($indexedPu, $indexedCp);
+        $cpToRemove = array_diff_key($indexedCp, $indexedPu);
+
+        return array(
+            'keep' => $cpToKepp,
+            'add' => $cpToAdd,
+            'remove' => $cpToRemove,
+        );
+    }
+
+    /**
+     * Wrap a @link PrivilegedUser to an array of @link CommunityPrivilege
+     * @param PrivilegedUser $privilegedUser
+     * @return  array
+     */
+    public function wrapPrivilegedUserToCommunityPrivileges(PrivilegedUser $privilegedUser) {
+        $communityPrivileges = array();
+
+        /** @var User $user */
+        $user = $this->em->getReference('MbyUserBundle:User', $privilegedUser->getUserId());
+        /** @var Community $community */
+        $community = $this->em->getReference('MbyCommunityBundle:Community', $privilegedUser->getCommunityId());
+
+        if ($privilegedUser->isOwner()) {
+            /** @var Privilege $ownerPrivilege */
+            $ownerPrivilege = $this->em->getReference('MbyCommunityBundle:Privilege', PrivilegeRepository::OWNER_CODE);
+            $ownerCp = CommunityPrivilege::build($user, $community, $ownerPrivilege);
+            $communityPrivileges[serialize($ownerCp)] = $ownerCp;
+        }
+
+        if ($privilegedUser->isAdmin()) {
+            /** @var Privilege $adminPrivilege */
+            $adminPrivilege = $this->em->getReference('MbyCommunityBundle:Privilege', PrivilegeRepository::ADMIN_CODE);
+            $adminCp = CommunityPrivilege::build($user, $community, $adminPrivilege);
+            $communityPrivileges[serialize($adminCp)] = $adminCp;
+        }
+
+        if ($privilegedUser->isModerator()) {
+            /** @var Privilege $moderatorPrivilege */
+            $moderatorPrivilege = $this->em->getReference('MbyCommunityBundle:Privilege', PrivilegeRepository::MODERATOR_CODE);
+            $moderatorCp = CommunityPrivilege::build($user, $community, $moderatorPrivilege);
+            $communityPrivileges[serialize($moderatorCp)] = $moderatorCp;
+        }
+
+        return $communityPrivileges;
+    }
+
+    /**
+     * @param Community $community
+     * @param $communityPrivileges
+     * @return array
+     */
+    public function wrapCommunityPrivilegesToPrivilegedUsers(Community $community, $communityPrivileges) {
+        $privilegedUsers = array();
+
+        /** @var CommunityPrivilege $communityPrivilege */
+        foreach ($communityPrivileges as $communityPrivilege) {
+            $user = $communityPrivilege->getUser();
+            $userId = $user->getId();
+            $privilege = $communityPrivilege->getPrivilege();
+
+            if (! isset($privilegedUsers[$userId])) {
+                $pu = new PrivilegedUser();
+                $pu->setCommunity($community);
+                $pu->setCommunityId($community->getId());
+                $pu->setUser($user);
+                $pu->setUserId($user->getId());
+                $pu->setLabel($user->getUsername());
+            } else {
+                $pu = $privilegedUsers[$userId];
+            }
+
+            if (PrivilegeRepository::OWNER_CODE === $privilege->getCode()) {
+                $pu->setOwner(true);
+            } else if (PrivilegeRepository::ADMIN_CODE === $privilege->getCode()) {
+                $pu->setAdmin(true);
+            } else if (PrivilegeRepository::MODERATOR_CODE === $privilege->getCode()) {
+                $pu->setModerator(true);
+            }
+
+            $privilegedUsers[$user->getId()] = $pu;
+        }
+        return $privilegedUsers;
+    }
 }
