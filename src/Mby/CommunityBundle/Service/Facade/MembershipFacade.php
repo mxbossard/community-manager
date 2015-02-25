@@ -54,11 +54,11 @@ class MembershipFacade
     }
 
     /**
-     * Validate an application.
+     * Accept an application.
      *
      * @param Membership $membership
      */
-    public function validateApplication(Membership $membership)
+    public function acceptApplication(Membership $membership)
     {
 
 
@@ -66,11 +66,11 @@ class MembershipFacade
     }
 
     /**
-     * Refuse an application.
+     * Reject an application.
      *
      * @param Membership $membership
      */
-    public function refuseApplication(Membership $membership)
+    public function rejectApplication(Membership $membership)
     {
 
 

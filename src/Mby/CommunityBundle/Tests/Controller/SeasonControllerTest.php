@@ -6,6 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SeasonControllerTest extends WebTestCase
 {
+    public function testEmpty() {
+
+    }
+
     /*
     public function testCompleteScenario()
     {

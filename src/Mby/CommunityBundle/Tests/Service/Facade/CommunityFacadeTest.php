@@ -123,7 +123,7 @@ class CommunityFacadeTest extends KernelTestCase
         );
     }
 
-    public function testLoadPrivilegedUsers() {
+    public function testWrapCommunityPrivilegesToPrivilegedUsers() {
         /** @var CommunityFacade $facade */
         $facade = $this->container->get(CommunityFacade::SERVICE_NAME);
 
@@ -146,7 +146,7 @@ class CommunityFacadeTest extends KernelTestCase
         $communityPrivileges[] = $entities['cp6'];
         $communityPrivileges[] = $entities['cp7'];
 
-        $privilegedUsers = $facade->loadPrivilegedUsers($community, $communityPrivileges);
+        $privilegedUsers = $facade->wrapCommunityPrivilegesToPrivilegedUsers($community, $communityPrivileges);
 
         $this->assertEquals(4, count($privilegedUsers), 'Bad privilegedUsers count');
 

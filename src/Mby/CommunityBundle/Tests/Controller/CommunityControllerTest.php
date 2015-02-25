@@ -6,6 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CommunityControllerTest extends WebTestCase
 {
+    public function testEmpty() {
+
+    }
+
     /*
     public function testCompleteScenario()
     {
