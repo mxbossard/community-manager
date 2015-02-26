@@ -24,6 +24,12 @@ services:
     community_facade:
         class:     Mby\CommunityBundle\Service\Facade\CommunityFacade
         arguments: [ "@doctrine.orm.entity_manager", "@community_manager", "@privilege_manager" ]
+    season_facade:
+        class:     Mby\CommunityBundle\Service\Facade\SeasonFacade
+        arguments: [ "@doctrine.orm.entity_manager", "@season_manager", "@privilege_manager" ]
+    membership_facade:
+        class:     Mby\CommunityBundle\Service\Facade\MembershipFacade
+        arguments: [ "@doctrine.orm.entity_manager", "@membership_manager", "@privilege_manager" ]
 
     form.type.manage_community:
         class: Mby\CommunityBundle\Form\Type\ManageCommunityType

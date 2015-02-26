@@ -16,18 +16,24 @@ class Responsibility extends AbstractBaseEntity
 {
 
 /**
+     * @var string
+     *
+     * @ORM\Column(name="code", type="string")
+     * @ORM\Id
+     */
+    private $code;
+
+    /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(name="rank", type="integer", unique=true)
      */
-    private $id;
+    private $rank;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=100, unique=true)
+     * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank(message="responsibility.name.not_blank")
      * @Assert\Length(
      *      min = 3,
@@ -59,15 +65,23 @@ class Responsibility extends AbstractBaseEntity
     }
 
     /**
-     * Get id
-     *
-     * @return integer 
+     * @return string
      */
-    public function getId()
+    public function getCode()
     {
-        return $this->id;
+        return $this->code;
     }
 
+    /**
+     * @param string $code
+     * @return Responsibility
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
 
     /**
      * Set name
@@ -78,6 +92,25 @@ class Responsibility extends AbstractBaseEntity
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRank()
+    {
+        return $this->rank;
+    }
+
+    /**
+     * @param int $rank
+     * @return Responsibility
+     */
+    public function setRank($rank)
+    {
+        $this->rank = $rank;
 
         return $this;
     }

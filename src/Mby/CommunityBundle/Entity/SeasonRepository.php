@@ -57,7 +57,7 @@ class SeasonRepository extends EntityRepository
                         JOIN m.responsibilities r
                     WHERE m.user = :userId
                       AND ( s.toDate IS NULL OR s.toDate >= :today )
-                    ORDER BY r.id ASC, c.name ASC, s.name ASC'
+                    ORDER BY r.rank ASC, c.name ASC, s.name ASC'
             )
             ->setParameter('userId', $user->getId())
             ->setParameter('today', (new \DateTime())->format("Y-m-d"));
@@ -82,7 +82,7 @@ class SeasonRepository extends EntityRepository
                         JOIN m.responsibilities r
                     WHERE m.user = :userId
                       AND  s.toDate < :today
-                    ORDER BY r.id ASC, s.fromDate DESC, c.name ASC, s.name ASC'
+                    ORDER BY r.rank ASC, s.fromDate DESC, c.name ASC, s.name ASC'
             )
             ->setParameter('userId', $user->getId())
             ->setParameter('today', (new \DateTime())->format("Y-m-d"));
@@ -106,7 +106,7 @@ class SeasonRepository extends EntityRepository
                         JOIN s.memberships m
                         JOIN m.responsibilities r
                     WHERE m.user = :userId
-                    ORDER BY s.fromDate DESC, r.id ASC, c.name ASC
+                    ORDER BY s.fromDate DESC, r.rank ASC, c.name ASC
                 '
             )
             ->setParameter('userId', $user->getId());

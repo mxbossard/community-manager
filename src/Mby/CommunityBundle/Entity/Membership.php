@@ -10,16 +10,26 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Membership
  *
- * @ORM\Table(name="mby_memberships")
+ * @ORM\Table(name="mby_memberships", uniqueConstraints={
+ *      @ORM\UniqueConstraint(name="search_idx", columns={"season_id", "user_id", "applicationDate"})
+ * })
  * @ORM\Entity(repositoryClass="Mby\CommunityBundle\Entity\MembershipRepository")
  */
 class Membership extends AbstractBaseEntity
 {
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
      * @var \Mby\UserBundle\Entity\User
-     * 
-     * @ORM\Id 
+     *
      * @ORM\ManyToOne(targetEntity="Mby\UserBundle\Entity\User", inversedBy="memberships")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
@@ -27,13 +37,19 @@ class Membership extends AbstractBaseEntity
 
     /**
      * @var \Mby\CommunityBundle\Entity\Season
-     * 
-     * @ORM\Id
+     *
      * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Season", inversedBy="memberships")
      * @ORM\JoinColumn(name="season_id", referencedColumnName="id", nullable=false)
      * , fetch="EXTRA_LAZY"
      */
     private $season;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="applicationDate", type="date", nullable=false)
+     */
+    private $applicationDate;
 
     /**
      * @var \DateTime
@@ -50,11 +66,25 @@ class Membership extends AbstractBaseEntity
     private $toDate;
 
     /**
-     * @var \DateTime
+     * @var boolean
      *
-     * @ORM\Column(name="$applicationDate", type="date", nullable=true)
+     * @ORM\Column(name="rejected", type="boolean", nullable=false)
      */
-    private $applicationDate;
+    private $rejected;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="canceled", type="boolean", nullable=false)
+     */
+    private $canceled;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="text", nullable=true)
+     */
+    private $comment;
 
     /**
      * @var string
@@ -69,10 +99,9 @@ class Membership extends AbstractBaseEntity
      * @ORM\ManyToMany(targetEntity="Mby\CommunityBundle\Entity\Responsibility")
      * @ORM\JoinTable(name="mby_memberships_responsibilities",
      *      joinColumns={
-     *               @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false),
-     *               @ORM\JoinColumn(name="season_id", referencedColumnName="season_id", nullable=false)
+     *               @ORM\JoinColumn(name="membership_id", referencedColumnName="id", nullable=false),
      *           },
-     *      inverseJoinColumns={@ORM\JoinColumn(name="responsibility_id", referencedColumnName="id", nullable=false)}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="responsibility_code", referencedColumnName="code", nullable=false)}
      * )
      */
     private $responsibilities;
@@ -81,11 +110,18 @@ class Membership extends AbstractBaseEntity
     {
         parent::__construct();
         
-        $this->administrator = false;
-        $this->moderator = false;
+        $this->rejected = false;
+        $this->canceled = false;
         $this->responsibilities = new ArrayCollection();
     }
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Set fromDate
@@ -131,6 +167,57 @@ class Membership extends AbstractBaseEntity
     public function getToDate()
     {
         return $this->toDate;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRejected()
+    {
+        return $this->rejected;
+    }
+
+    /**
+     * @param boolean $rejected
+     */
+    public function setRejected($rejected)
+    {
+        $this->rejected = $rejected;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param string $comment
+     * @return Membership
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isCanceled()
+    {
+        return $this->canceled;
+    }
+
+    /**
+     * @param boolean $canceled
+     */
+    public function setCanceled($canceled)
+    {
+        $this->canceled = $canceled;
     }
 
     /**

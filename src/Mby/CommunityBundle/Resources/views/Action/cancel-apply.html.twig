@@ -1,7 +1,6 @@
 <form action="{{ path("membership_cancelApplication") }}" method="post">
 
-    <input type="hidden" name="user_id" value="{{ membership.user.id }}"/>
-    <input type="hidden" name="season_id" value="{{ season.id }}"/>
+    <input type="hidden" name="id" value="{{ membership.id }}"/>
     <input type="hidden" name="_token" value="{{ csrf_token('cancel-apply') }}"/>
 
     <button class="btn btn-danger">

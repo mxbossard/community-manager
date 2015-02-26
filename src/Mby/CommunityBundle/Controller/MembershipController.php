@@ -5,6 +5,7 @@ namespace Mby\CommunityBundle\Controller;
 use AppBundle\Controller\AbstractController;
 use Mby\CommunityBundle\Entity\Membership;
 use Mby\CommunityBundle\Form\Type\ActionType;
+use Mby\CommunityBundle\Service\Facade\MembershipFacade;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -44,10 +45,11 @@ class MembershipController extends AbstractController
             ->getRepository('MbyCommunityBundle:Season')
             ->find($seasonId);
 
-        $msManager = $this->get(MembershipManager::SERVICE_NAME);
+        /** @var MembershipFacade $msFacade */
+        $msFacade = $this->get(MembershipFacade::SERVICE_NAME);
         $user= $this->get('security.context')->getToken()->getUser();
 
-        $msManager->apply($user, $season, null, null);
+        $msFacade->applyToSeason($user, $season);
 
         return $this->redirectToRoute("lobby_myMemberships");
     }
@@ -55,11 +57,11 @@ class MembershipController extends AbstractController
     /**
      * Validate an application to a community.
      *
-     * @Route("/validApplication", name="membership_validApplication")
+     * @Route("/acceptApplication", name="membership_acceptApplication")
      * @Method("POST")
      * @Security("has_role('ROLE_USER')")
      */
-    public function validApplicationAction(Request $request)
+    public function acceptApplicationAction(Request $request)
     {
         $this->assertValidCrsf($request, "valid-application");
 
@@ -72,8 +74,9 @@ class MembershipController extends AbstractController
 
         $user= $this->get('security.context')->getToken()->getUser();
 
-        $msManager = $this->get(MembershipManager::SERVICE_NAME);
-        $msManager->validApplication($user, $membership);
+        /** @var MembershipFacade $msFacade */
+        $msFacade = $this->get(MembershipFacade::SERVICE_NAME);
+        $msFacade->acceptApplication($user, $membership);
 
         return $this->redirectToRoute("lobby_myMemberships");
     }
@@ -92,14 +95,14 @@ class MembershipController extends AbstractController
         $membership = $this->getDoctrine()
             ->getRepository('MbyCommunityBundle:Membership')
             ->find(array(
-                "user" => $request->get("user_id"),
-                "season" => $request->get("season_id"),
+                "id" => $request->get("id"),
             ));
 
         $user= $this->get('security.context')->getToken()->getUser();
 
-        $msManager = $this->get(MembershipManager::SERVICE_NAME);
-        $msManager->cancelApplication($user, $membership);
+        /** @var MembershipFacade $msFacade */
+        $msFacade = $this->get(MembershipFacade::SERVICE_NAME);
+        $msFacade->cancelApplication($user, $membership);
 
         return $this->redirectToRoute("lobby_myMemberships");
     }

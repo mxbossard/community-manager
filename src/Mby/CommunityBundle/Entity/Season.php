@@ -12,7 +12,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="mby_seasons")
  * @ORM\Entity(repositoryClass="Mby\CommunityBundle\Entity\SeasonRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class Season extends AbstractBaseEntity
 {
@@ -273,19 +272,4 @@ class Season extends AbstractBaseEntity
         return $this->active;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersistCallback()
-    {
-        // Add your code here
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function preUpdateCallback()
-    {
-        // Add your code here
-    }
 }

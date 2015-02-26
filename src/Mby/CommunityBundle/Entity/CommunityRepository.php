@@ -158,7 +158,7 @@ class CommunityRepository extends EntityRepository
                         JOIN c.seasons s
                         LEFT JOIN s.memberships m
                         LEFT JOIN m.responsibilities r
-                    ORDER BY s.fromDate DESC, r.id ASC, c.name ASC'
+                    ORDER BY s.fromDate DESC, r.rank ASC, c.name ASC'
         );
 
         try {

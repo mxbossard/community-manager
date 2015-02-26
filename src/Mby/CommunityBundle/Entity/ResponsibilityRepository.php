@@ -13,8 +13,8 @@ use Doctrine\ORM\EntityRepository;
 class ResponsibilityRepository extends EntityRepository
 {
 
-	const APPLICANT_NAME = 'applicant';
-    const MEMBER_NAME = 'member';
+	const APPLICANT_CODE = 'applicant';
+    const MEMBER_CODE = 'member';
 
     /**
      * @param string $name

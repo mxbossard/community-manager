@@ -17,7 +17,7 @@ use Mby\CommunityBundle\Entity\CommunityPrivilege;
 
 class LoadFakedData extends AbstractFixture implements OrderedFixtureInterface
 {
-    const COUNT_MULTIPLIER = 1000;
+    const COUNT_MULTIPLIER = 100;
 
     const MAX_STEP_MULTIPLIER = 5;
 
@@ -263,7 +263,6 @@ class LoadFakedData extends AbstractFixture implements OrderedFixtureInterface
     public function loadRandMemberships(ObjectManager $manager)
     {
         $responsibilities = array(
-            'follower' => $this->getReference('resp-follower'),
             'applicant' => $this->getReference('resp-applicant'),
             'member' => $this->getReference('resp-member'),
             'president' => $this->getReference('resp-president'),
@@ -273,6 +272,9 @@ class LoadFakedData extends AbstractFixture implements OrderedFixtureInterface
         );
 
         $nbUsers = count($this->insertedUsers);
+
+        $today = new \DateTime('today');
+        $yesterday = new \DateTime('today -1 day');
 
         foreach ($this->insertedSeasons as $season) {
             $userChoosed = array();
@@ -306,13 +308,14 @@ class LoadFakedData extends AbstractFixture implements OrderedFixtureInterface
                 $membership->setUser($user);
 
                 $respRand = rand(0, 9);
-                if ($respRand < 3) {
-                    $membership->addResponsibility($responsibilities['follower']);
-                } else if ($respRand === 3) {
+                if ($respRand <= 3) {
                     $membership->addResponsibility($responsibilities['applicant']);
+                    $membership->setApplicationDate($today);
                 } else {
                     $membership->addResponsibility($responsibilities['member']);
-                    $respRand2 = rand(3, 6);
+                    $membership->setApplicationDate($yesterday);
+                    $membership->setFromDate($today);
+                    $respRand2 = rand(2, 5);
                     $membership->addResponsibility($responsibilities[array_keys($responsibilities)[$respRand2]]);
                 }
 

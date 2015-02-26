@@ -31,46 +31,45 @@ class ResponsibilityManager
      */
     protected $responsibilityRepo;
 
-    public function __construct(EntityManager $entityManager)
-    {
+    public function __construct(EntityManager $entityManager) {
         $this->em = $entityManager;
         $this->membershipRepo = $this->em->getRepository('MbyCommunityBundle:Membership');
         $this->responsibilityRepo = $this->em->getRepository('MbyCommunityBundle:Responsibility');
     }
 
-    public function isApplicant(Membership $membership)
-    {
-        $applicantResp = $this->responsibilityRepo->findByName(ResponsibilityRepository::APPLICANT_NAME);
+    public function isApplication(Membership $membership) {
+        $applicantResp = $this->em->getReference('MbyCommunityBundle:Responsibility', ResponsibilityRepository::APPLICANT_CODE);
 
-        return $this->hasMemberRole($membership->getResponsibilities(), $applicantResp);
+        return $this->hasResponsibility($membership->getResponsibilities(), $applicantResp);
     }
 
-    public function isApplicant2(User $user, Season $season)
-    {
+    public function isApplicant(User $user, Season $season) {
         $membership = $this->membershipRepo->loadResponsibilities($user->getId(), $season->getId());
 
-        return $this->isApplicant($membership);
+        return $this->isApplication($membership);
     }
 
-    public function isMember(Membership $membership)
-    {
-        $memberResp = $this->responsibilityRepo->findByName(ResponsibilityRepository::MEMBER_NAME);
+    public function isMembership(Membership $membership) {
+        $memberResp = $this->em->getReference('MbyCommunityBundle:Responsibility', ResponsibilityRepository::MEMBER_CODE);
 
-        return $this->hasMemberRole($membership->getResponsibilities(), $memberResp);
+        return $this->hasResponsibility($membership->getResponsibilities(), $memberResp);
     }
 
-    public function isMember2(User $user, Season $season)
-    {
+    public function isMember(User $user, Season $season) {
         $membership = $this->membershipRepo->loadResponsibilities($user->getId(), $season->getId());
 
-        return $this->isMember($membership);
+        return $this->isMembership($membership);
     }
 
-    protected function hasResponsibility(ArrayCollection $responsibilities, Responsibility $resp)
-    {
-
+    /**
+     * @param $responsibilities
+     * @param Responsibility $resp
+     * @return bool
+     */
+    protected function hasResponsibility($responsibilities, Responsibility $resp) {
+        /** @var Responsibility $responsibility */
         foreach ($responsibilities as $responsibility) {
-            if ($responsibility->getId() === $resp->getId()) {
+            if ($responsibility->getCode() === $resp->getCode()) {
                 return true;
             }
         }

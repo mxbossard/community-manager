@@ -26,7 +26,7 @@ class MembershipRepository extends EntityRepository
                     WHERE m.user = :userId
                         AND s.fromDate <= :today AND ( s.toDate IS NULL OR :today <= s.toDate )
                         AND ( m.fromDate IS NULL OR m.fromDate <= :today) AND ( m.toDate IS NULL OR :today <= m.toDate )
-                    ORDER BY r.id ASC, c.name ASC'
+                    ORDER BY r.rank ASC, c.name ASC'
             )
             ->setParameter('userId', $user->getId())
             ->setParameter('today', (new \DateTime())->format("Y-m-d"));
@@ -90,7 +90,7 @@ class MembershipRepository extends EntityRepository
                     FROM MbyCommunityBundle:Membership m
                         JOIN m.responsibilities r
                     WHERE m.user = :userId AND m.season = :seasonId
-                    ORDER BY r.id ASC
+                    ORDER BY r.rank ASC
                 '
             )
             ->setParameter('userId', $user->getId())
