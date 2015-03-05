@@ -1,0 +1,6 @@
+
+<a class="btn btn-warning btn-block" href="{{ path("community_admin-unlock_season", {id: seasonId, _token: csrf_token('unlock_season')}) }}">
+
+    {{ 'unlock applications' | trans({}, 'MbyCommunityBundle') | capitalize }}
+
+</a>

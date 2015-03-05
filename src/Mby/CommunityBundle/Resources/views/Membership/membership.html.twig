@@ -41,10 +41,10 @@
     {% endif %}
 
     {% if 'applicant' in responsibilities %}
-        {{ include('MbyCommunityBundle:Action:cancel-apply.html.twig', {'seasonId' : season.id})  }}
+        {{ include('MbyCommunityBundle:Action/membership:apply_cancel.html.twig', {'seasonId' : season.id})  }}
 
     {% elseif 'member' not in responsibilities and season.active %}
-        {{ include('MbyCommunityBundle:Action:apply.html.twig', {'seasonId' : season.id})  }}
+        {{ include('MbyCommunityBundle:Action/membership:apply.html.twig', {'seasonId' : season.id})  }}
     {% endif %}
 
 {% endblock %}

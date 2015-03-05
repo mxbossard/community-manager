@@ -3,7 +3,7 @@
     <input type="hidden" name="_token" value="{{ csrf_token('follow') }}"/>
 
     <button class="btn btn-info">
-        {{ include('MbyCommunityBundle:Action:follow_icon.html.twig') }}
+        {{ include('MbyCommunityBundle:Action/icons:follow-icon.html.twig') }}
         {{ 'follow' | trans({}, 'MbyCommunityBundle') | capitalize }}
     </button>
 </form>

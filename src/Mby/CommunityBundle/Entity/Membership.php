@@ -38,7 +38,7 @@ class Membership extends AbstractBaseEntity
     /**
      * @var \Mby\CommunityBundle\Entity\Season
      *
-     * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Season", inversedBy="memberships")
+     * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Season", inversedBy="memberships", fetch="EAGER")
      * @ORM\JoinColumn(name="season_id", referencedColumnName="id", nullable=false)
      * , fetch="EXTRA_LAZY"
      */

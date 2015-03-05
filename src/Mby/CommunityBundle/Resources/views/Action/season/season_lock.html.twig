@@ -1,0 +1,17 @@
+{#
+<form class="form-inline" action="{{ path("community_admin-activate_season") }}" method="post">
+    <input type="hidden" name="id" value="{{ communityId }}"/>
+    <input type="hidden" name="_token" value="{{ csrf_token('season_enable') }}"/>
+
+    <button class="btn btn-success">
+        {{ include('MbyCommunityBundle:Action/icons:season_new-icon.html.twig') }}
+        {{ 'new season' | trans({}, 'MbyCommunityBundle') | capitalize }}
+    </button>
+</form>
+#}
+
+<a class="btn btn-warning btn-block" href="{{ path("community_admin-lock_season", {id: seasonId, _token: csrf_token('lock_season')}) }}">
+
+    {{ 'lock applications' | trans({}, 'MbyCommunityBundle') | capitalize }}
+
+</a>

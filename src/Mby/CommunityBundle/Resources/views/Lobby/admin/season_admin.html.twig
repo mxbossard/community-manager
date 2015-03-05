@@ -1,0 +1,13 @@
+{% extends 'MbyCommunityBundle:Lobby:lobbyLayout.html.twig' %}
+
+{% block navTabs %}
+    {% set layout_activeTab='lobby_administration' %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block page %}
+
+    {{ form(form) }}
+
+{% endblock %}

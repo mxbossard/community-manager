@@ -1,0 +1,33 @@
+{#
+<form class="form-inline" action="{{ path("season_close") }}" method="post">
+    <input type="hidden" name="id" value="{{ seasonId }}"/>
+    <input type="hidden" name="_token" value="{{ csrf_token('season_close') }}"/>
+
+    <button class="btn btn-danger">
+        {{ include('MbyCommunityBundle:Action/icons:season_close-icon.html.twig') }}
+        {{ 'close season' | trans({}, 'MbyCommunityBundle') | capitalize }}
+    </button>
+</form>
+#}
+
+<div class="input-group">
+    {{ form_start(closeSeasonForm) }}
+    {{ form_widget(closeSeasonForm.endDate, { 'attr': {'class': 'text-center form-control'} }) }}
+
+    <span class="input-group-btn">
+        <button class="btn btn-danger" type="submit">
+            {{ 'close season' | trans({}, 'MbyCommunityBundle') | capitalize }}
+        </button>
+    </span>
+
+    {{ form_end(closeSeasonForm) }}
+
+    {#
+    <span class="input-group-btn">
+        <a class="btn btn-danger btn-block" href="{{ path("community_admin-close_season", {id: seasonId, endDate: '2015-03-01', _token: csrf_token('close_season')}) }}">
+            {{ 'close season' | trans({}, 'MbyCommunityBundle') | capitalize }}
+        </a>
+    </span>
+    #}
+
+</div>

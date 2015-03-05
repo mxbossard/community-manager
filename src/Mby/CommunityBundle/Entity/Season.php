@@ -70,7 +70,7 @@ class Season extends AbstractBaseEntity
     /**
      * @var \Mby\CommunityBundle\Entity\Community
      * 
-     * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Community", inversedBy="seasons")
+     * @ORM\ManyToOne(targetEntity="Mby\CommunityBundle\Entity\Community", inversedBy="seasons", fetch="EAGER")
      * @ORM\JoinColumn(name="community_id", referencedColumnName="id", nullable=false)
      */
     private $community;
@@ -89,6 +89,17 @@ class Season extends AbstractBaseEntity
 
         $this->active = false;
         $this->memberships = new ArrayCollection();
+    }
+
+    /**
+     * @param int $id
+     * @return Season
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

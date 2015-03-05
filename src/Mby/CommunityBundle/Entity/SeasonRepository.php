@@ -2,6 +2,7 @@
 
 namespace Mby\CommunityBundle\Entity;
 
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 
 use Mby\UserBundle\Entity\User;
@@ -16,8 +17,44 @@ use Mby\CommunityBundle\Entity\Community;
 class SeasonRepository extends EntityRepository
 {
 
-    public function findUserApplicableSeasons(User $user)
-    {
+    public function findCurrentSeason(Community $community) {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+                '   SELECT s
+                    FROM MbyCommunityBundle:Season s
+                    WHERE s.community = :communityId
+                        AND s.fromDate <= :today
+                        AND ( s.toDate IS NULL OR s.toDate >= :today )
+                '
+            )
+            ->setParameter('communityId', $community->getId())
+            ->setParameter('today', new \DateTime('today'))
+        ;
+
+        $result = $query->getSingleResult();
+
+        return $result;
+    }
+
+    public function findOldSeasons(Community $community) {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+                '   SELECT s
+                    FROM MbyCommunityBundle:Season s
+                    WHERE s.community = :communityId
+                        AND s.toDate IS NOT NULL AND s.toDate < :today
+                '
+            )
+            ->setParameter('communityId', $community->getId())
+            ->setParameter('today', new \DateTime('today'))
+        ;
+
+        $results = $query->getResult();
+
+        return $results;
+    }
+
+    public function findUserApplicableSeasons(User $user) {
         $em = $this->getEntityManager();
 
         $query = $em->createQuery(
@@ -42,6 +79,76 @@ class SeasonRepository extends EntityRepository
         $result = $query->getResult();
 
         return $result;
+
+    }
+
+    public function findLastSeason(Community $community) {
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(
+                '   SELECT s
+                    FROM MbyCommunityBundle:Season s
+                    WHERE s.community = :communityId
+                    ORDER BY s.fromDate DESC
+                '
+            )
+            ->setParameter('communityId', $community->getId())
+            ->setMaxResults(1)
+        ;
+
+        try {
+            return $query->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
+
+    }
+
+    public function findPreviousSeason(Season $season) {
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(
+            '   SELECT s
+                    FROM MbyCommunityBundle:Season s
+                    WHERE s.id = :seasonId
+                        AND s.fromDate < :seasonFromDate
+                    ORDER BY s.fromDate DESC
+                '
+        )
+            ->setParameter('seasonId', $season->getId())
+            ->setParameter('seasonFromDate', $season->getFromDate())
+            ->setMaxResults(1)
+        ;
+
+        try {
+            return $query->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
+
+    }
+
+    public function findFollowingSeason(Season $season) {
+        $em = $this->getEntityManager();
+
+        $query = $em->createQuery(
+            '   SELECT s
+                    FROM MbyCommunityBundle:Season s
+                    WHERE s.id = :seasonId
+                        AND s.fromDate > :seasonFromDate
+                    ORDER BY s.fromDate ASC
+                '
+        )
+            ->setParameter('seasonId', $season->getId())
+            ->setParameter('seasonFromDate', $season->getFromDate())
+            ->setMaxResults(1)
+        ;
+
+        try {
+            return $query->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
 
     }
 
@@ -119,25 +226,5 @@ class SeasonRepository extends EntityRepository
         
     }
 
-    public function findLastSeason(Community $community)
-    {
-        $query = $this->getEntityManager()
-            ->createQuery(
-                '   SELECT s
-                    FROM MbyCommunityBundle:Season s
-                    WHERE s.community_id = :communityId
-                    ORDER BY s.fromDate
-                    LIMIT 1
-                '
-            )
-            ->setParameter('communityId', $community->getId());
-        
-        try {
-            return $query->getSingleResult();
-        } catch (\Doctrine\ORM\NoResultException $e) {
-            throw $e;
-        }
-        
-    }
 
 }

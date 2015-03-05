@@ -3,13 +3,9 @@
 namespace Mby\CommunityBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
-use Mby\CommunityBundle\Form\CommunityType;
+use Mby\CommunityBundle\Form\Type\CommunityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
 
 class ManageCommunityType extends AbstractType
 {

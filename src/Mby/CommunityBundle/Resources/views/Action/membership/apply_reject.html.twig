@@ -1,0 +1,8 @@
+
+<a href="{{ path("community_admin-reject_application", {id: membershipId, _token: csrf_token('reject_application')}) }}">
+
+    <span class="btn btn-danger">
+        <span class="glyphicon glyphicon-remove-sign"></span>
+        {{ 'reject' | trans({}, 'MbyCommunityBundle') | capitalize }}
+    </span>
+</a>

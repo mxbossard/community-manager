@@ -4,6 +4,11 @@ services:
         class: Twig_Extensions_Extension_Intl
         tags:
             - { name: twig.extension }
+    twig.extension.mby:
+        class: AppBundle\Extension\MbyTwigExtension
+        arguments: [ "@csrf_intent_repository", "@form.csrf_provider", "@security.context" ]
+        tags:
+            - { name: twig.extension }
 
     privilege_manager:
         class:     Mby\CommunityBundle\Service\PrivilegeManager
@@ -31,8 +36,16 @@ services:
         class:     Mby\CommunityBundle\Service\Facade\MembershipFacade
         arguments: [ "@doctrine.orm.entity_manager", "@membership_manager", "@privilege_manager" ]
 
+    csrf_intent_repository:
+        class:     Mby\CommunityBundle\Service\CsrfIntentRepository
+
     form.type.manage_community:
         class: Mby\CommunityBundle\Form\Type\ManageCommunityType
         arguments: [ "@doctrine.orm.entity_manager" ]
         tags:
             - { name: form.type, alias: manage_community }
+    form.type.season:
+        class: Mby\CommunityBundle\Form\Type\AdminSeasonType
+        arguments: [ "@doctrine.orm.entity_manager" ]
+        tags:
+            - { name: form.type, alias: admin_season }

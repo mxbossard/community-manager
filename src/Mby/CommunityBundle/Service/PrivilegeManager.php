@@ -129,10 +129,11 @@ class PrivilegeManager
      */
     protected function isPrivileged(User $user, Community $community, $privilegeCode)
     {
-        foreach ($user->getPrivileges() as $p) {
+        $privileges = $user->getPrivileges();
+        /** @var CommunityPrivilege $p */
+        foreach ($privileges as $p) {
             if ($p->getCommunity()->getId() === $community->getId()
-                && $p->getPrivilege()->getCode() === $privilegeCode
-            ) {
+                    && $p->getPrivilege()->getCode() === $privilegeCode) {
                 return true;
             }
         }

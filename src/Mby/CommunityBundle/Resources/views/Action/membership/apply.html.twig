@@ -3,7 +3,7 @@
     <input type="hidden" name="_token" value="{{ csrf_token('apply') }}"/>
 
     <button class="btn btn-success">
-        {{ include('MbyCommunityBundle:Action:apply_icon.html.twig') }}
+        {{ include('MbyCommunityBundle:Action/icons:apply-icon.html.twig') }}
         {{ 'apply' | trans({}, 'MbyCommunityBundle') | capitalize }}
     </button>
 </form>

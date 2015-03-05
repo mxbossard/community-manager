@@ -33,7 +33,7 @@ class CommunityManagerController extends AbstractController
 	/**
 	 * Display community managing index.
 	 *
-     * @Route("/{id}", name="community-manage")
+     * @Route("/{id}", name="community_manage")
      * @Method("GET")
      * @Security("has_role('ROLE_USER')")
      */
@@ -48,12 +48,10 @@ class CommunityManagerController extends AbstractController
             'privileges' => $community->getPrivileges(),
             'privilegedUsers' => $privilegedUsers,
         ), array(
-            'action' => $this->generateUrl('community-manage_save'),
+            'action' => $this->generateUrl('community_manage-save'),
         ));
 
-        dump($privilegedUsers);
-
-        return $this->render('MbyCommunityBundle:Lobby:manageCommunity.html.twig', array(
+        return $this->render('MbyCommunityBundle:Lobby/owner:community_manage.html.twig', array(
             "form" => $form->createView(),
             'privilegedUsers' => $privilegedUsers,
         ));
@@ -62,7 +60,7 @@ class CommunityManagerController extends AbstractController
     /**
      * Add new owner.
      *
-     * @Route("/save", name="community-manage_save")
+     * @Route("/save", name="community_manage-save")
      * @Method("POST")
      * @Security("has_role('ROLE_USER')")
      */
@@ -93,7 +91,7 @@ class CommunityManagerController extends AbstractController
             ));
         }
 
-        return $this->render('MbyCommunityBundle:Lobby:manageCommunity.html.twig', array(
+        return $this->render('MbyCommunityBundle:Lobby/owner:community_manage.html.twig', array(
             "form" => $form->createView(),
             'privilegedUsers' => $privilegedUsers,
         ));

@@ -3,9 +3,11 @@
 namespace AppBundle\Controller;
 
 use Mby\CommunityBundle\Entity\Community;
+use Mby\CommunityBundle\Service\CsrfIntentRepository;
 use Mby\CommunityBundle\Service\PrivilegeManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\User;
 
@@ -14,16 +16,50 @@ abstract class AbstractController extends Controller
 
     const CSRF_FIELD_NAME = "_token";
 
+    const CSRF_INTENT_NAME = "intent";
+
+    /**
+     * @param $intent
+     * @param $token
+     * @throws \Exception
+     */
+    public function assertValidCsrfToken($intent, $token)
+    {
+        $csrfProvider = $this->get('form.csrf_provider');
+
+        if (!$csrfProvider->isCsrfTokenValid($intent, $token)) {
+            throw new \Exception("CSRF token invalid !");
+        }
+    }
+
+    /**
+     * @param $intention
+     * @param $token
+     * @throws \Exception
+     */
+    public function assertValidMbyCsrf($intention, $token)
+    {
+        $csrfProvider = $this->get('form.csrf_provider');
+
+        /** @var CsrfIntentRepository $csrfIntentRepo */
+        $csrfIntentRepo = $this->get(CsrfIntentRepository::SERVICE_NAME);
+
+        $intent = $csrfIntentRepo->get($this->currentUser(), $intention);
+
+        if (!$csrfProvider->isCsrfTokenValid($intent, $token)) {
+            throw new \Exception("CSRF token invalid !");
+        }
+    }
+
     /**
      * @param Request $request
      * @param $intent
      * @throws \Exception
      */
-    public function assertValidCrsf(Request $request, $intent) {
-        $csrfProvider = $this->get('form.csrf_provider');
-        if (! $csrfProvider->isCsrfTokenValid($intent, $request->get(AbstractController::CSRF_FIELD_NAME))) {
-            throw new \Exception("CSRF token invalid !");
-        }
+    public function assertValidCsrfRequest($intent, Request $request) {
+        $token = $request->get(AbstractController::CSRF_FIELD_NAME);
+
+        $this->assertValidCsrfToken($intent, $token);
     }
 
     /**
@@ -71,4 +107,19 @@ abstract class AbstractController extends Controller
     public function currentUser() {
         return $this->get('security.context')->getToken()->getUser();
     }
+
+    public function render($view, array $parameters = array(), Response $response = null)
+    {
+        $user = $this->currentUser();
+
+        /** @var CsrfIntentRepository $csrfIntentRepo */
+        $csrfIntentRepo = $this->get(CsrfIntentRepository::SERVICE_NAME);
+        $intent = $csrfIntentRepo->generate($user, 'foo');
+
+        $parameters[AbstractController::CSRF_INTENT_NAME] = $intent;
+
+        return parent::render($view, $parameters, $response);
+    }
+
+
 }

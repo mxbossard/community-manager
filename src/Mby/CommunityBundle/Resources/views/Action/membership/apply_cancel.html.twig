@@ -4,7 +4,7 @@
     <input type="hidden" name="_token" value="{{ csrf_token('cancel-apply') }}"/>
 
     <button class="btn btn-danger">
-        {{ include('MbyCommunityBundle:Action:cancel-apply_icon.html.twig') }}
+        {{ include('MbyCommunityBundle:Action/icons:apply_cancel-icon.html.twig') }}
         {{ 'cancel my application' | trans({}, 'MbyCommunityBundle') | capitalize }}
     </button>
 

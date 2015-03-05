@@ -37,7 +37,7 @@ class MembershipController extends AbstractController
      */
     public function applyAction(Request $request)
     {
-        $this->assertValidCrsf($request, "apply");
+        $this->assertValidCsrfRequest('apply', $request);
 
         $seasonId = $request->get('id');
 
@@ -63,7 +63,7 @@ class MembershipController extends AbstractController
      */
     public function acceptApplicationAction(Request $request)
     {
-        $this->assertValidCrsf($request, "valid-application");
+        $this->assertValidCsrfRequest('acceptApplication', $request);
 
         $membership = $this->getDoctrine()
             ->getRepository('MbyCommunityBundle:Membership')
@@ -90,7 +90,7 @@ class MembershipController extends AbstractController
      */
     public function cancelApplicationAction(Request $request)
     {
-        $this->assertValidCrsf($request, "cancel-apply");
+        $this->assertValidCsrfRequest('cancelApplication', $request);
 
         $membership = $this->getDoctrine()
             ->getRepository('MbyCommunityBundle:Membership')
@@ -116,7 +116,7 @@ class MembershipController extends AbstractController
      */
     public function myCommunitiesAction()
     {
-        $user= $this->get('security.context')->getToken()->getUser();
+        $user = $this->currentUser();
 
         $communities = $this->getDoctrine()
         ->getRepository('MbyCommunityBundle:Community')
@@ -137,7 +137,7 @@ class MembershipController extends AbstractController
      */
     public function allCommunitiesAction()
     {
-        $user= $this->get('security.context')->getToken()->getUser();
+        $user = $this->currentUser();
 
         $communities = $this->getDoctrine()
         ->getRepository('MbyCommunityBundle:Community')
@@ -158,7 +158,7 @@ class MembershipController extends AbstractController
      */
     public function mySeasonsAction()
     {
-        $user= $this->get('security.context')->getToken()->getUser();
+        $user = $this->currentUser();
 
         $seasons = $this->getDoctrine()
         ->getRepository('MbyCommunityBundle:Season')

@@ -1,0 +1,17 @@
+{#
+<form class="form-inline" action="{{ path("season_new") }}" method="post">
+    <input type="hidden" name="id" value="{{ communityId }}"/>
+    <input type="hidden" name="_token" value="{{ csrf_token('season_new') }}"/>
+
+    <button class="btn btn-primary">
+        {{ include('MbyCommunityBundle:Action/icons:season_new-icon.html.twig') }}
+        {{ 'new season' | trans({}, 'MbyCommunityBundle') | capitalize }}
+    </button>
+</form>
+#}
+
+<a class="btn btn-success btn-block" href="{{ path("community_admin-new_season", {id: communityId, _token: csrf_token('new_season')}) }}">
+
+    {{ 'new season' | trans({}, 'MbyCommunityBundle') | capitalize }}
+
+</a>

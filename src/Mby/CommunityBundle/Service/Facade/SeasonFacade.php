@@ -9,6 +9,7 @@ use Mby\CommunityBundle\Entity\CommunityPrivilegeRepository;
 use Mby\CommunityBundle\Entity\Privilege;
 use Mby\CommunityBundle\Entity\PrivilegeRepository;
 use Mby\CommunityBundle\Entity\Season;
+use Mby\CommunityBundle\Entity\SeasonRepository;
 use Mby\CommunityBundle\Model\PrivilegedUser;
 use Mby\CommunityBundle\Service\CommunityManager;
 use Mby\CommunityBundle\Service\PrivilegeManager;
@@ -38,11 +39,27 @@ class SeasonFacade
     protected $privilegeManager;
 
     public function __construct(EntityManager $entityManager, SeasonManager $seasonManager,
-                                PrivilegeManager $privilegeManager)
-    {
+                                PrivilegeManager $privilegeManager) {
         $this->em = $entityManager;
         $this->seasonManager = $seasonManager;
         $this->privilegeManager = $privilegeManager;
+    }
+
+    /**
+     * Build a new season with default params.
+     *
+     * @param Community $community
+     * @return Season
+     */
+    public function buildNewSeason(Community $community) {
+        $season = new Season();
+        $season->setActive(false)
+            ->setFromDate(new \DateTime('today'))
+            ->setToDate(null)
+            ->setCommunity($community);
+        ;
+
+        return $season;
     }
 
     /**
@@ -52,16 +69,19 @@ class SeasonFacade
      * @param Community $community
      * @param Season $season
      */
-    public function createNewSeason(User $user, Community $community, Season $season)
-    {
+    public function createNewSeason(User $user, Community $community, Season $season) {
         if (! $this->privilegeManager->isAdministrator($user, $community)) {
             throw new AccessDeniedException();
         }
 
-        // Check if previous season is closed
-
         // create new season
-        $this->seasonManager->create($user, $community, $season);
+        $season->setActive(false);
+        // from date: today
+        $season->setFromDate(new \DateTime('today'));
+        // season not closed on creation
+        $season->setToDate(null);
+
+        $this->seasonManager->create($community, $season);
 
         $this->em->flush();
     }
@@ -72,11 +92,25 @@ class SeasonFacade
      * @param User $user
      * @param Season $season
      */
-    public function updateSeason(User $user, Season $season)
-    {
-        if (! $this->privilegeManager->isAdministrator($user, $season->getCommunity())) {
+    public function updateSeason(User $user, Season $season) {
+        /** @var SeasonRepository $seasonRepo */
+        $seasonRepo = $this->em->getRepository('MbyCommunityBundle:Season');
+        /** @var Season $managedSeason */
+        $managedSeason = $seasonRepo->find($season->getId());
+
+        if (! $this->privilegeManager->isAdministrator($user, $managedSeason->getCommunity())) {
             throw new AccessDeniedException();
         }
+
+        // TODO Check if season is updatable
+
+        // Update editable fields
+        $managedSeason->setToDate($season->getToDate())
+            ->setName($season->getName())
+            ->setNote($season->getNote())
+        ;
+
+        $this->seasonManager->update($managedSeason);
 
         $this->em->flush();
     }
@@ -86,14 +120,45 @@ class SeasonFacade
      *
      * @param User $user
      * @param Season $season
+     * @param \DateTime $endDate
+     * @throws \Mby\CommunityBundle\Exception\OrmException
      */
-    public function closeSeason(User $user, Season $season)
-    {
+    public function closeSeason(User $user, Season $season, \DateTime $endDate) {
         if (! $this->privilegeManager->isAdministrator($user, $season->getCommunity())) {
             throw new AccessDeniedException();
         }
 
+        $this->seasonManager->close($season, $endDate);
         $this->em->flush();
     }
 
+    /**
+     * Lock a season.
+     *
+     * @param User $user
+     * @param Season $season
+     */
+    public function lockSeason(User $user, Season $season) {
+        if (! $this->privilegeManager->isAdministrator($user, $season->getCommunity())) {
+            throw new AccessDeniedException();
+        }
+
+        $this->seasonManager->lockSeason($season);
+        $this->em->flush();
+    }
+
+    /**
+     * Unlock a season.
+     *
+     * @param User $user
+     * @param Season $season
+     */
+    public function unlockSeason(User $user, Season $season) {
+        if (! $this->privilegeManager->isAdministrator($user, $season->getCommunity())) {
+            throw new AccessDeniedException();
+        }
+
+        $this->seasonManager->unlockSeason($season);
+        $this->em->flush();
+    }
 }

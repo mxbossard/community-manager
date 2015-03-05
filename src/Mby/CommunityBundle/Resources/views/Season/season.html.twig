@@ -36,7 +36,7 @@
     {% endif %}
 
     {% if season.active %}
-        {{ include('MbyCommunityBundle:Action:apply.html.twig', {'seasonId' : season.id})  }}
+        {{ include('MbyCommunityBundle:Action/membership:apply.html.twig', {'seasonId' : season.id})  }}
     {% endif %}
 
     {{ include('MbyCommunityBundle:Action:follow.html.twig', {'communityId' : community.id})  }}

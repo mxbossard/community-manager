@@ -1,0 +1,109 @@
+{% extends 'MbyCommunityBundle:Lobby:lobbyLayout.html.twig' %}
+
+{% block navTabs %}
+    {% set layout_activeTab='lobby_administration' %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block page %}
+
+    <h3>
+        {{ 'community administration' | trans({}, 'MbyCommunityBundle') | capitalize }}
+        : {{ community.name }}
+    </h3>
+
+    {% if currentSeason is defined and currentSeason != null %}
+        {# A current season exists #}
+
+        <h3>
+            {{ 'current season' | trans({}, 'MbyCommunityBundle') | capitalize }}
+        </h3>
+
+        <p>
+            {{ community.name }} - {{ currentSeason.name }}
+            {{ 'opened on' | trans({}, 'MbyCommunityBundle') }}
+            {{ currentSeason.fromDate | localizeddate('medium', 'none', app.request.locale) }}
+
+            {% if currentSeason.toDate != null %}
+                {{ 'will be closed on' | trans({}, 'MbyCommunityBundle') }}
+                {{ currentSeason.toDate | localizeddate('medium', 'none', app.request.locale) }}
+            {% endif %}
+        </p>
+
+        <div class="row">
+            <span class="col-sm-3 col-md-3 col-lg-2">
+                {{ include('MbyCommunityBundle:Action/season:season_edit.html.twig', {seasonId: currentSeason.id}) }}
+            </span>
+
+            {% if currentSeason.active %}
+
+                <span class="col-sm-3 col-md-3 col-lg-2">
+                    {{ include('MbyCommunityBundle:Action/season:season_lock.html.twig', {seasonId: currentSeason.id}) }}
+                </span>
+            {% else %}
+
+                <span class="col-sm-3 col-md-3 col-lg-2">
+                    {{ include('MbyCommunityBundle:Action/season:season_unlock.html.twig', {seasonId: currentSeason.id}) }}
+                </span>
+            {% endif %}
+
+            {% if currentSeason.toDate == null %}
+                <span class="col-sm-6 col-md-6 col-lg-5">
+                    {{ include('MbyCommunityBundle:Action/season:season_close.html.twig', {seasonId: currentSeason.id}) }}
+                </span>
+            {% endif %}
+
+        </div>
+
+        <h3>
+            {{ 'current applications' | trans({}, 'MbyCommunityBundle') | capitalize }}
+        </h3>
+
+        <ul>
+        {% for application in currentApplications %}
+            {% set applicant = application.user %}
+
+            <li>
+                {{ applicant.username }} apply on {{ application.applicationDate | localizeddate('medium', 'none', app.request.locale) }}
+                {{ include('MbyCommunityBundle:Action/membership:apply_accept.html.twig', {membershipId: application.id}) }}
+                {{ include('MbyCommunityBundle:Action/membership:apply_reject.html.twig', {membershipId: application.id}) }}
+
+            </li>
+
+        {% endfor %}
+        </ul>
+
+    {% else %}
+        {# No current season #}
+
+        <h3>
+            {{ 'no current season' | trans({}, 'MbyCommunityBundle') | capitalize }}
+        </h3>
+
+        {{ include('MbyCommunityBundle:Action/season:season_new.html.twig', {communityId: community.id}) }}
+
+    {% endif %}
+
+
+    {% if oldSeasons is defined and oldSeasons != null %}
+        {# Old seasons exists #}
+
+        <h3>
+            {{ 'old seasons' | trans({}, 'MbyCommunityBundle') | capitalize }}
+        </h3>
+
+        <ul>
+        {% for season in oldSeasons %}
+            <li>
+                {{ community.name }} - {{ season.name }}
+            </li>
+        {% endfor %}
+        </ul>
+
+    {% endif %}
+
+{% endblock %}
+
+
+

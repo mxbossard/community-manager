@@ -14,8 +14,28 @@ use Mby\UserBundle\Entity\User;
  */
 class MembershipRepository extends EntityRepository
 {
-    public function findUserActiveMemberships(User $user)
-    {
+
+    public function findApplications(Season $season) {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+            '   SELECT m, r, u
+                    FROM MbyCommunityBundle:Membership m
+                        LEFT JOIN m.responsibilities r
+                        LEFT JOIN m.user u
+                    WHERE m.season = :seasonId
+                        AND r.code = :applicantCode
+                    ORDER BY m.applicationDate ASC'
+            )
+            ->setParameter('seasonId', $season->getId())
+            ->setParameter('applicantCode', ResponsibilityRepository::APPLICANT_CODE)
+        ;
+
+        $result = $query->getResult();
+
+        return $result;
+    }
+
+    public function findUserActiveMemberships(User $user) {
         $em = $this->getEntityManager();
         $query = $em->createQuery(
                 '   SELECT m, s, c, r
@@ -32,13 +52,11 @@ class MembershipRepository extends EntityRepository
             ->setParameter('today', (new \DateTime())->format("Y-m-d"));
 
         $result = $query->getResult();
-        $em->close();
 
         return $result;
     }
 
-    public function findUserOldMemberships(User $user)
-    {
+    public function findUserOldMemberships(User $user) {
         $em = $this->getEntityManager();
         $query = $em->createQuery(
             '   SELECT m, s, c, r
@@ -55,13 +73,11 @@ class MembershipRepository extends EntityRepository
             ->setParameter('today', (new \DateTime())->format("Y-m-d"));
 
         $result = $query->getResult();
-        $em->close();
 
         return $result;
     }
 
-    public function findAllUserMemberships(User $user)
-    {
+    public function findAllUserMemberships(User $user) {
         $query = $this->getEntityManager()
             ->createQuery(
                 '	SELECT ms 
@@ -82,8 +98,7 @@ class MembershipRepository extends EntityRepository
         
     }
 
-    public function loadResponsibilities(User $user, Season $season)
-    {
+    public function loadResponsibilities(User $user, Season $season) {
         $query = $this->getEntityManager()
             ->createQuery(
                 '   SELECT m, r

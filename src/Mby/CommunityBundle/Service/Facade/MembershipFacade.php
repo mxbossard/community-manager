@@ -12,6 +12,7 @@ use Mby\CommunityBundle\Service\PrivilegeManager;
 use Mby\CommunityBundle\Service\ResponsibilityManager;
 use Mby\UserBundle\Entity\User;
 use Mby\CommunityBundle\Entity\Community;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class MembershipFacade
 {
@@ -54,46 +55,6 @@ class MembershipFacade
     }
 
     /**
-     * Accept an application.
-     *
-     * @param User $user
-     * @param Membership $membership
-     * @throws \Exception
-     */
-    public function acceptApplication(User $user, Membership $membership) {
-        $season = $membership->getSeason();
-        $community = $season->getCommunity();
-
-        if (! $this->privilegeManager->isModerator($user, $community)) {
-            throw new \Exception("user must be moderator to accept an application");
-        }
-
-        $this->membershipManager->acceptApplication($membership);
-
-        $this->em->flush();
-    }
-
-    /**
-     * Reject an application.
-     *
-     * @param User $user
-     * @param Membership $membership
-     * @throws \Exception
-     */
-    public function rejectApplication(User $user, Membership $membership) {
-        $season = $membership->getSeason();
-        $community = $season->getCommunity();
-
-        if (! $this->privilegeManager->isModerator($user, $community)) {
-            throw new \Exception("user must be moderator to reject an application");
-        }
-
-        $this->membershipManager->rejectApplication($membership);
-
-        $this->em->flush();
-    }
-
-    /**
      * Cancel an application.
      *
      * @param User $user
@@ -106,6 +67,44 @@ class MembershipFacade
         }
 
         $this->membershipManager->cancelApplication($membership);
+
+        $this->em->flush();
+    }
+
+    /**
+     * Accept an application.
+     *
+     * @param User $user
+     * @param Membership $membership
+     * @throws AccessDeniedException
+     */
+    public function acceptApplication(User $user, Membership $membership, $comment = null) {
+        $community = $membership->getSeason()->getCommunity();
+
+        if (! $this->privilegeManager->isAdministrator($user, $community)) {
+            throw new AccessDeniedException("user must be administrator to accept an application");
+        }
+
+        $this->membershipManager->cancelApplication($membership, $comment);
+
+        $this->em->flush();
+    }
+
+    /**
+     * Reject an application.
+     *
+     * @param User $user
+     * @param Membership $membership
+     * @throws AccessDeniedException
+     */
+    public function rejectApplication(User $user, Membership $membership, $comment = null) {
+        $community = $membership->getSeason()->getCommunity();
+
+        if (! $this->privilegeManager->isAdministrator($user, $community)) {
+            throw new AccessDeniedException("user must be administrator to reject an application");
+        }
+
+        $this->membershipManager->rejectApplication($membership, $comment);
 
         $this->em->flush();
     }

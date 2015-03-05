@@ -1,0 +1,6 @@
+
+<a class="btn btn-primary btn-block" href="{{ path("community_admin-edit_season", {id: seasonId, _token: csrf_token('edit_season')}) }}">
+
+    {{ 'edit season' | trans({}, 'MbyCommunityBundle') | capitalize }}
+
+</a>

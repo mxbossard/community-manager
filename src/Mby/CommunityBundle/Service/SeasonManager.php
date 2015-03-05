@@ -4,6 +4,7 @@ namespace Mby\CommunityBundle\Service;
 
 use Doctrine\ORM\EntityManager;
 
+use Mby\CommunityBundle\Exception\OrmException;
 use Mby\UserBundle\Entity\User;
 use Mby\CommunityBundle\Entity\Season;
 use Mby\CommunityBundle\Entity\Community;
@@ -35,11 +36,11 @@ class SeasonManager
      *
      * @param Community $community
      * @param Season $season
-     * @throws \Exception
+     * @throws OrmException
      */
     public function create(Community $community, Season $season)
     {
-        $this->assertSeasonDates($community, $season);
+        $this->assertSeasonDates($season);
 
         $seasonRepo = $this->em->getRepository('MbyCommunityBundle:Season');
         $lastSeason = $seasonRepo->findLastSeason($community);
@@ -48,7 +49,7 @@ class SeasonManager
         // The previous season must be closed : have an end date.
         if ($lastSeason !== null) {
             if ($lastSeason->getToDate() === null) {
-                throw new \Exception("previous season must be closed");
+                throw new OrmException("previous season must be closed");
             }
 
             $this->assertDate1StrictlyBeforeDate2($lastSeason->getToDate(), $season->getFromDate(),
@@ -64,21 +65,22 @@ class SeasonManager
      * Update a season.
      *
      * @param Season $season
-     * @throws \Exception
+     * @throws OrmException
      */
     public function update(Season $season)
     {
         $community = $season->getCommunity();
 
-        $this->assertSeasonDates($community, $season);
+        $this->assertSeasonDates($season);
 
         // A season must start after the end date of a previous season.
         // The previous season must be closed : have an end date.
+        /** @var SeasonRepository $seasonRepo */
         $seasonRepo = $this->em->getRepository('MbyCommunityBundle:Season');
         $previousSeason = $seasonRepo->findPreviousSeason($season);
         if ($previousSeason !== null) {
             if ($previousSeason->getToDate() === null) {
-                throw new \Exception("previous season must be closed");
+                throw new OrmException("previous season must be closed");
             }
 
             $this->assertDate1StrictlyBeforeDate2($previousSeason->getToDate(), $season->getFromDate(),
@@ -99,7 +101,7 @@ class SeasonManager
      *
      * @param Season $season
      * @param \DateTime $endDate
-     * @throws \Exception
+     * @throws OrmException
      */
     public function close(Season $season, \DateTime $endDate)
     {
@@ -107,15 +109,49 @@ class SeasonManager
         $mergedSeason = $this->em->merge($season);
 
         if ($mergedSeason->getToDate() !== null) {
-            throw new \Exception("season already closed");
+            throw new OrmException("season already closed");
         }
 
+        // The end date must take place after the fromDate
         $this->assertDate1StrictlyBeforeDate2($mergedSeason->getFromDate(), $endDate,
             "closing date not after opening date");
 
         $mergedSeason->setToDate($endDate);
+        $mergedSeason->setActive(false);
 
         $this->em->persist($mergedSeason);
+    }
+
+    /**
+     * Lock a season.
+     *
+     * @param Season $season
+     * @throws OrmException
+     */
+    public function lockSeason(Season $season)
+    {
+        // Merge the season to erase all possible modifications on season entity.
+        $this->em->refresh($season);
+
+        $season->setActive(false);
+
+        $this->em->persist($season);
+    }
+
+    /**
+     * Unlock a season.
+     *
+     * @param Season $season
+     * @throws OrmException
+     */
+    public function unlockSeason(Season $season)
+    {
+        // Merge the season to erase all possible modifications on season entity.
+        $this->em->refresh($season);
+
+        $season->setActive(true);
+
+        $this->em->persist($season);
     }
 
     /**
@@ -124,12 +160,12 @@ class SeasonManager
      * @param \DateTime $date1
      * @param \DateTime $date2
      * @param string $message
-     * @throws \Exception
+     * @throws OrmException
      */
     public function assertDate1StrictlyBeforeDate2(\DateTime $date1, \DateTime $date2, $message = "date1 not before date2")
     {
         if ($date1->diff($date2)->d <= 0) {
-            throw new \Exception($message);
+            throw new OrmException($message);
         }
     }
 
@@ -139,12 +175,12 @@ class SeasonManager
      * @param \DateTime $date1
      * @param \DateTime $date2
      * @param string $message
-     * @throws \Exception
+     * @throws OrmException
      */
     public function assertDate1NotAfterDate2(\DateTime $date1, \DateTime $date2, $message = "date1 not before date2")
     {
         if ($date1->diff($date2)->d < 0) {
-            throw new \Exception($message);
+            throw new OrmException($message);
         }
     }
 
@@ -153,13 +189,13 @@ class SeasonManager
      *
      * @param Community $community
      * @param Season $season
-     * @throws \Exception
+     * @throws OrmException
      */
     public function assertSeasonDates(Season $season)
     {
         // fromDate mandatory
         if ($season->getFromDate() === null) {
-            throw new \Exception("season opening date is mandatory");
+            throw new OrmException("season opening date is mandatory");
         }
 
         // toDate need to be after fromDate
